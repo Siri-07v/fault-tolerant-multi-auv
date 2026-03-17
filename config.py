@@ -1,0 +1,141 @@
+"""
+config.py — Central configuration for the AUV swarm simulation project.
+All tunable constants are defined here; no hardcoded values elsewhere.
+"""
+import os
+
+# ─── Dataset ───────────────────────────────────────────────────────────────────
+DATASET_PATH = os.path.join("Dataset", "Dataset", "train")
+SCALER_PATH = "scaler.pkl"
+MODEL_PATH = "fault_classifier_best.pt"
+
+FAULT_LABEL_MAP = {
+    "Normal": ("normal", 0),
+    "AddWeight": ("load_fault", 1),
+    "PressureGain_constant": ("sensor_failure", 2),
+    "PropellerDamage_bad": ("actuator_degraded_severe", 3),
+    "PropellerDamage_slight": ("actuator_degraded_mild", 4),
+}
+
+INDEX_TO_LABEL = {v[1]: v[0] for v in FAULT_LABEL_MAP.values()}
+LABEL_NAMES = [INDEX_TO_LABEL[i] for i in range(5)]
+
+SENSOR_COLUMNS = ["depth", "w_row", "w_pitch", "w_yaw", "a_x", "a_y", "a_z"]
+
+# ─── Preprocessing ─────────────────────────────────────────────────────────────
+WINDOW_SIZE = 50
+STRIDE = 10
+TRAIN_SPLIT = 0.70
+VAL_SPLIT = 0.15
+TEST_SPLIT = 0.15
+
+# ─── Training ──────────────────────────────────────────────────────────────────
+BATCH_SIZE = 64
+LEARNING_RATE = 1e-3
+MAX_EPOCHS = 100
+EARLY_STOPPING_PATIENCE = 10
+LR_SCHEDULER_PATIENCE = 5
+
+# ─── Simulation ────────────────────────────────────────────────────────────────
+N_AMVS = 5
+N_TASKS = 10
+MISSION_SPACE = 1000          # meters
+SIMULATION_TIMESTEPS = 500
+FAULT_UPDATE_INTERVAL = 10    # timesteps
+TASK_COMPLETION_RADIUS = 15.0  # meters
+ENERGY_INIT_MIN = 70
+ENERGY_INIT_MAX = 100
+ENERGY_MOVE_COST = 0.1
+ENERGY_TASK_COST = 0.5
+ENERGY_REALLOC_THRESHOLD = 15
+
+# Speed per fault state (m/timestep)
+SPEED = {
+    "normal": 5.0,
+    "actuator_degraded_mild": 3.0,
+    "actuator_degraded_severe": 1.5,
+    "sensor_failure": 1.5,
+    "load_fault": 4.0,
+}
+
+# Availability per fault state
+AVAILABILITY = {
+    "normal": 1.0,
+    "actuator_degraded_mild": 0.65,
+    "actuator_degraded_severe": 0.25,
+    "sensor_failure": 0.1,
+    "load_fault": 0.5,
+}
+
+# ─── Comms ──────────────────────────────────────────────────────────────────────
+ACOUSTIC_RANGE = 3000         # meters
+SOUND_SPEED = 1500            # m/s
+TIMESTEP_DURATION_MS = 100
+GRAPH_REBUILD_INTERVAL = 10
+
+# ─── Bidding weights ───────────────────────────────────────────────────────────
+BID_W1 = 0.4   # distance
+BID_W2 = 0.3   # energy
+BID_W3 = 0.3   # availability
+BID_AVAILABILITY_THRESHOLD = 0.15
+PRIORITY_WEIGHT_MIN = 0.5
+PRIORITY_WEIGHT_MAX = 1.5
+
+# ─── CBBA (legacy, kept for reference) ──────────────────────────────────────────
+MAX_CONSENSUS_ITERATIONS = 10
+
+# ─── Miele et al. benefit function parameters ──────────────────────────────────
+BENEFIT_A = 0.15            # sigmoid steepness (shallower = more bidding competition)
+BENEFIT_B = 250.0           # sigmoid midpoint (meters, scaled for 1000m space)
+BENEFIT_EPSILON_A = 0.01    # auction price increment
+BENEFIT_TW = 60             # max waiting time before priority term activates (timesteps)
+TASK_DWELL_TIME = 10        # timesteps AMV spends serving before task completes
+MAX_AUCTION_ITERATIONS = 8
+EDMC_RESET_ON_ASSIGNMENT = True
+
+# ─── FSM state names ───────────────────────────────────────────────────────────
+FSM_HOMING = "Homing"
+FSM_ASSIGNMENT = "Assignment"
+FSM_REACHING = "Reaching"
+FSM_SERVING = "Serving"
+FSM_IDLE = "Idle"
+FSM_DEADLOCK = "Deadlock"
+
+# ─── Physics / Ocean Environment ───────────────────────────────────────────────
+DEPTH_MIN = 10.0              # meters — shallowest operating depth
+DEPTH_MAX = 150.0             # meters — deepest operating depth
+AMV_VOLUME = 0.05             # m³ — vehicle displaced volume
+AMV_MASS = 52.0               # kg — vehicle dry mass
+THERMOCLINE_DEPTH = 80.0      # meters — centre of thermocline transition
+THERMOCLINE_WIDTH = 20.0      # meters — sigmoid transition width
+SURFACE_TEMP = 28.0           # °C
+DEEP_TEMP = 4.0               # °C
+SALINITY = 35.0               # PSU (practical salinity units)
+DRAG_INFLUENCE = 0.05         # fraction of current added to movement
+DEPTH_FAULT_ESCALATION_PROB = 0.005  # per-timestep chance at high pressure
+
+# ─── Depth-aware Communications ────────────────────────────────────────────────
+ACOUSTIC_RANGE_SURFACE = 600   # meters at surface
+ACOUSTIC_RANGE_DEEP = 400      # meters at 150m depth
+THERMOCLINE_PENALTY = 0.15     # extra packet loss across thermocline
+EPSILON_LAMBDA = 0.05          # algebraic connectivity threshold
+
+# ─── Live 3D Visualization ─────────────────────────────────────────────────────
+LIVE_VIZ_ENABLED = True
+
+# ─── Idle Energy Drain ────────────────────────────────────────────────────────
+IDLE_ENERGY_DRAIN = 0.01       # percent per timestep for onboard systems
+
+# ─── Patrol Behavior ─────────────────────────────────────────────────────────
+FSM_PATROL = "Patrol"
+PATROL_SPEED_FRACTION = 0.4    # fraction of normal speed in patrol mode
+PATROL_RADIUS = 50.0           # meters — orbit radius if all tasks complete
+
+# ─── Dynamic Task Respawn ─────────────────────────────────────────────────────
+DYNAMIC_TASK_RESPAWN = False
+N_RESPAWN_TASKS = 5            # number of new tasks to spawn per batch
+
+# ─── DVL Navigation Drift ─────────────────────────────────────────────────────
+DVL_DRIFT_RATE = 0.08          # meters of drift per meter traveled (8% DVL error)
+DVL_FAULT_DRIFT_MULTIPLIER = 5.0  # drift multiplier when sensor_failure active
+DVL_RESET_ON_SURFACE = True    # drift resets at <10m depth (simulated GPS fix)
