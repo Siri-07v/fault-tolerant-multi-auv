@@ -35,6 +35,7 @@ from visualize import (
     plot_fsm_diagram,
 )
 import metrics as sim_metrics
+from symbolic_rules import SymbolicRuleEngine, log_verdict
 
 
 def _gather_test_csvs():
@@ -207,6 +208,10 @@ def main():
     # Fix 3: idle counter — force patrol for stuck AMVs
     amv_idle_counter = {i: 0 for i in range(config.N_AMVS)}
 
+    # ── Symbolic Rule Engine ────────────────────────────────────────────────
+    rule_engine = SymbolicRuleEngine()
+    amv_speed_caps = {i: 5.0 for i in range(config.N_AMVS)}  # per-AMV speed cap
+
     # ── Simulation loop ─────────────────────────────────────────────────────
     print(f"\n{'='*60}")
     print(f"Running simulation for {config.SIMULATION_TIMESTEPS} timesteps...")
@@ -295,8 +300,30 @@ def main():
         if t % config.FAULT_UPDATE_INTERVAL == 0:
             for amv in amvs:
                 amv.update_fault_state(classifier, scaler, device)
+
+                # ── Monkey-patch CNN softmax probabilities for Rule 4 ──────
+                if len(amv.sensor_buffer) >= config.WINDOW_SIZE:
+                    _window = np.array(list(amv.sensor_buffer), dtype=np.float32)
+                    _window = (_window - scaler["mean"]) / scaler["std"]
+                    _x = torch.from_numpy(_window).permute(1, 0).unsqueeze(0).to(device)
+                    with torch.no_grad():
+                        _logits = classifier(_x)
+                        _probs = torch.softmax(_logits, dim=1).squeeze().detach().cpu().numpy()
+                    amv._last_fault_probs = _probs
+
                 amv.compute_availability()
                 amv.maybe_switch_csv(t, csv_switch_log=csv_switch_log)
+
+                # ── Symbolic: post-fault evaluation (Rules 1 & 2) ──────────
+                post_verdicts = rule_engine.evaluate_post_fault(amv)
+                for v in post_verdicts:
+                    log_verdict(v, t, amv.amv_id)
+                amv_speed_caps[amv.amv_id] = rule_engine.get_speed_cap(amv)
+
+            # ── Symbolic: fleet-wide audit (Rules 7 & 8) ──────────────────
+            fleet_verdicts = rule_engine.evaluate_fleet(amvs)
+            for v in fleet_verdicts:
+                log_verdict(v, t, -1)
 
             amv_positions = {a.amv_id: tuple(a.position) for a in amvs}
             amv_depths = {a.amv_id: a.depth for a in amvs}
@@ -370,6 +397,13 @@ def main():
                     nearest = min(unassigned_tasks,
                                   key=lambda tk: np.linalg.norm(
                                       amv.position - tk.position))
+
+                    # ── Symbolic: safety gate before force-assignment ──────
+                    if not rule_engine.is_assignment_safe(amv, nearest, amvs):
+                        print(f"  [VETOED] AMV{amv.amv_id} ✗ T{nearest.task_id} "
+                              f"(symbolic rule vetoed assignment)")
+                        continue
+
                     nearest.status = 'active'
                     nearest.assigned_to = amv.amv_id
                     amv.assigned_task = nearest
@@ -610,6 +644,20 @@ def main():
                                 consensus.task_completion_log,
                                 filename='plot_fsm_timeline.png')
     visualize.plot_fsm_diagram(filename='plot_fsm_diagram.png')
+
+    # ── Symbolic Rule Engine Summary ─────────────────────────────────────────
+    rule_summary = rule_engine.get_rule_log_summary()
+    print(f"\n{'='*60}")
+    print("SYMBOLIC RULE ENGINE SUMMARY")
+    print(f"{'='*60}")
+    print(f"  Total rules fired:    {rule_summary['total_rules_fired']}")
+    print(f"  Vetoes:               {rule_summary['vetoes']}")
+    print(f"  Modifications:        {rule_summary['modifications']}")
+    print(f"  Escalation strikes:   {rule_summary['escalation_strikes']}")
+    print(f"  By rule:")
+    for rule_name, count in rule_summary['by_rule'].items():
+        print(f"    {rule_name:25s}  {count}")
+    print(f"{'='*60}")
 
     print("\nAll done!")
 

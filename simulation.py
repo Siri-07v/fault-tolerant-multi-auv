@@ -229,17 +229,17 @@ class AMV:
         modifier = self.ocean_env.fault_modifier(self.depth)
 
         # Weighted class selection
-        if modifier < 1.3:
-            weights = {"normal": 0.95, "actuator_degraded_mild": 0.0,
+        if modifier < 1.2:
+            weights = {"normal": 0.90, "actuator_degraded_mild": 0.05,
                        "actuator_degraded_severe": 0.0, "sensor_failure": 0.0,
                        "load_fault": 0.05}
-        elif modifier < 1.8:
-            weights = {"normal": 0.60, "actuator_degraded_mild": 0.25,
-                       "actuator_degraded_severe": 0.0, "sensor_failure": 0.0,
+        elif modifier < 1.6:
+            weights = {"normal": 0.50, "actuator_degraded_mild": 0.30,
+                       "actuator_degraded_severe": 0.05, "sensor_failure": 0.0,
                        "load_fault": 0.15}
         else:
-            weights = {"normal": 0.20, "actuator_degraded_mild": 0.30,
-                       "actuator_degraded_severe": 0.25, "sensor_failure": 0.15,
+            weights = {"normal": 0.15, "actuator_degraded_mild": 0.30,
+                       "actuator_degraded_severe": 0.30, "sensor_failure": 0.15,
                        "load_fault": 0.10}
 
         # Filter to classes that exist in the pool

@@ -38,12 +38,12 @@ LR_SCHEDULER_PATIENCE = 5
 
 # ─── Simulation ────────────────────────────────────────────────────────────────
 N_AMVS = 5
-N_TASKS = 10
+N_TASKS = 15
 MISSION_SPACE = 1000          # meters
 SIMULATION_TIMESTEPS = 500
 FAULT_UPDATE_INTERVAL = 10    # timesteps
 TASK_COMPLETION_RADIUS = 15.0  # meters
-ENERGY_INIT_MIN = 70
+ENERGY_INIT_MIN = 80
 ENERGY_INIT_MAX = 100
 ENERGY_MOVE_COST = 0.1
 ENERGY_TASK_COST = 0.5
@@ -77,7 +77,7 @@ GRAPH_REBUILD_INTERVAL = 10
 BID_W1 = 0.4   # distance
 BID_W2 = 0.3   # energy
 BID_W3 = 0.3   # availability
-BID_AVAILABILITY_THRESHOLD = 0.15
+BID_AVAILABILITY_THRESHOLD = 0.25
 PRIORITY_WEIGHT_MIN = 0.5
 PRIORITY_WEIGHT_MAX = 1.5
 
@@ -86,11 +86,11 @@ MAX_CONSENSUS_ITERATIONS = 10
 
 # ─── Miele et al. benefit function parameters ──────────────────────────────────
 BENEFIT_A = 0.15            # sigmoid steepness (shallower = more bidding competition)
-BENEFIT_B = 250.0           # sigmoid midpoint (meters, scaled for 1000m space)
-BENEFIT_EPSILON_A = 0.01    # auction price increment
-BENEFIT_TW = 60             # max waiting time before priority term activates (timesteps)
-TASK_DWELL_TIME = 10        # timesteps AMV spends serving before task completes
-MAX_AUCTION_ITERATIONS = 8
+BENEFIT_B = 300.0           # sigmoid midpoint (meters, scaled for 1000m space)
+BENEFIT_EPSILON_A = 0.001   # auction price increment — slower conflict resolution
+BENEFIT_TW = 40             # max waiting time before priority term activates (timesteps)
+TASK_DWELL_TIME = 8         # timesteps AMV spends serving before task completes
+MAX_AUCTION_ITERATIONS = 6  # fewer iterations, more unresolved conflicts
 EDMC_RESET_ON_ASSIGNMENT = True
 
 # ─── FSM state names ───────────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ SURFACE_TEMP = 28.0           # °C
 DEEP_TEMP = 4.0               # °C
 SALINITY = 35.0               # PSU (practical salinity units)
 DRAG_INFLUENCE = 0.05         # fraction of current added to movement
-DEPTH_FAULT_ESCALATION_PROB = 0.005  # per-timestep chance at high pressure
+DEPTH_FAULT_ESCALATION_PROB = 0.008  # per-timestep chance at high pressure
 
 # ─── Depth-aware Communications ────────────────────────────────────────────────
 ACOUSTIC_RANGE_SURFACE = 600   # meters at surface
@@ -136,6 +136,6 @@ DYNAMIC_TASK_RESPAWN = False
 N_RESPAWN_TASKS = 5            # number of new tasks to spawn per batch
 
 # ─── DVL Navigation Drift ─────────────────────────────────────────────────────
-DVL_DRIFT_RATE = 0.08          # meters of drift per meter traveled (8% DVL error)
-DVL_FAULT_DRIFT_MULTIPLIER = 5.0  # drift multiplier when sensor_failure active
+DVL_DRIFT_RATE = 0.12          # meters of drift per meter traveled (12% DVL error)
+DVL_FAULT_DRIFT_MULTIPLIER = 8.0  # drift multiplier when sensor_failure active
 DVL_RESET_ON_SURFACE = True    # drift resets at <10m depth (simulated GPS fix)

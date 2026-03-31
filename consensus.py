@@ -48,10 +48,10 @@ def compute_benefit(amv, task, all_tasks, amvs=None):
 
         # Bonus for underutilized AMVs
         if amv.tasks_done < avg_done:
-            balance_bonus = 1.2 * (1.0 - amv.tasks_done / max(max_done, 1))
+            balance_bonus = 1.5 * (1.0 - amv.tasks_done / max(max_done, 1))
         else:
             # Penalty for overutilized AMVs
-            balance_bonus = -0.6 * (amv.tasks_done - avg_done) / max(max_done, 1)
+            balance_bonus = -0.8 * (amv.tasks_done - avg_done) / max(max_done, 1)
 
         beta_raw += balance_bonus
 
