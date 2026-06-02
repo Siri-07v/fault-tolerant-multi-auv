@@ -1118,3 +1118,70 @@ def plot_fsm_diagram(filename='plot_fsm_diagram.png'):
     plt.close(fig)
     print(f"Saved {filename}")
 
+
+# ─── Plot 14: CNN Classification Confidence Distribution ─────────────────────
+
+def plot_confidence_histogram(confidence_log, filename='plot_confidence_histogram.png'):
+    """
+    Two-panel figure showing CNN classification confidence.
+
+    confidence_log: list of dicts with keys:
+        timestep, amv_id, max_prob, class
+    """
+    if not confidence_log:
+        print("No confidence data — skipping plot_confidence_histogram.png")
+        return
+
+    all_probs = [entry['max_prob'] for entry in confidence_log]
+    all_classes = [entry['class'] for entry in confidence_log]
+
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(16, 6))
+    fig.suptitle('CNN Classification Confidence Distribution',
+                 fontsize=15, fontweight='bold')
+
+    # ── LEFT: Overall distribution ───────────────────────────────────────
+    ax_left.hist(all_probs, bins=40, color='#1565C0', edgecolor='white',
+                 alpha=0.85, linewidth=0.5)
+    ax_left.axvline(x=0.75, color='red', linestyle='--', linewidth=2,
+                    label='Confidence Threshold (0.75)')
+
+    below_threshold = sum(1 for p in all_probs if p < 0.75)
+    pct_below = below_threshold / max(len(all_probs), 1) * 100
+    ax_left.annotate(
+        f'{below_threshold} predictions ({pct_below:.1f}%)\nbelow 0.75 threshold',
+        xy=(0.75, ax_left.get_ylim()[1] * 0.85 if ax_left.get_ylim()[1] > 0 else 1),
+        xytext=(0.3, ax_left.get_ylim()[1] * 0.7 if ax_left.get_ylim()[1] > 0 else 0.8),
+        fontsize=9, color='red', fontweight='bold',
+        arrowprops=dict(arrowstyle='->', color='red', lw=1.5),
+    )
+
+    ax_left.set_xlabel('Max Softmax Probability')
+    ax_left.set_ylabel('Count')
+    ax_left.set_title('Overall Confidence Distribution')
+    ax_left.legend(loc='upper left', fontsize=9)
+    ax_left.grid(True, alpha=0.3)
+
+    # Re-draw to get proper ylim for annotation
+    fig.canvas.draw()
+
+    # ── RIGHT: Per-class distribution ────────────────────────────────────
+    unique_classes = sorted(set(all_classes))
+    for cls in unique_classes:
+        cls_probs = [entry['max_prob'] for entry in confidence_log
+                     if entry['class'] == cls]
+        color = FAULT_COLORS.get(cls, '#95a5a6')
+        ax_right.hist(cls_probs, bins=40, alpha=0.5, color=color,
+                      label=cls, edgecolor='white', linewidth=0.3)
+
+    ax_right.axvline(x=0.75, color='red', linestyle='--', linewidth=2)
+    ax_right.set_xlabel('Max Softmax Probability')
+    ax_right.set_ylabel('Count')
+    ax_right.set_title('Confidence Distribution Per Fault Class')
+    ax_right.legend(loc='upper left', fontsize=8)
+    ax_right.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {filename}")
+

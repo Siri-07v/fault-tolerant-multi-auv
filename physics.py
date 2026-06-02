@@ -4,6 +4,7 @@ Models temperature, pressure, sound speed, buoyancy, current drag,
 and depth-coupled fault probability.
 """
 import math
+import random
 import numpy as np
 
 import config
@@ -18,6 +19,10 @@ class OceanEnvironment:
         self._thermocline_depth = config.THERMOCLINE_DEPTH
         self._thermocline_width = config.THERMOCLINE_WIDTH
         self._salinity = config.SALINITY
+
+        # Turbulent ocean current — persistent random walk
+        self.current_direction = random.uniform(0, 2 * math.pi)
+        self.current_speed = random.uniform(0.1, 0.5)
 
     # ── Temperature ──────────────────────────────────────────────────────────
 
@@ -65,24 +70,36 @@ class OceanEnvironment:
         weight = mass * g
         return buoyant_force - weight
 
-    # ── Ocean current drag ───────────────────────────────────────────────────
+    # ── Ocean current drag (turbulent random walk) ────────────────────────────
+
+    def current_drag(self, timestep: int = 0) -> np.ndarray:
+        """
+        Persistent random walk current model.
+        Direction and speed are perturbed each call, producing a slowly
+        varying, non-periodic drag vector that is more realistic than
+        the previous sinusoidal model.
+        """
+        self.current_direction += random.gauss(0, 0.03)
+        self.current_speed += random.gauss(0, 0.02)
+        self.current_speed = max(0.05, min(1.0, self.current_speed))
+        vx = self.current_speed * math.cos(self.current_direction)
+        vy = self.current_speed * math.sin(self.current_direction)
+        return np.array([vx, vy], dtype=np.float64)
+
+    # ── Spatially variable thermocline ─────────────────────────────────────────
 
     @staticmethod
-    def current_drag(timestep: int) -> np.ndarray:
-        """
-        Slow time-varying sinusoidal 2D drag vector (m/timestep).
-        Represents tidal / current effects in the horizontal plane.
-        """
-        vx = 0.8 * math.sin(2.0 * math.pi * timestep / 500.0)
-        vy = 0.5 * math.cos(2.0 * math.pi * timestep / 700.0)
-        return np.array([vx, vy], dtype=np.float64)
+    def local_thermocline(x: float, y: float) -> float:
+        """Thermocline depth varies spatially with AMV XY position."""
+        return config.THERMOCLINE_DEPTH + 10 * math.sin(x / 500.0) + 5 * math.cos(y / 300.0)
 
     # ── Fault probability modifier ───────────────────────────────────────────
 
-    def fault_modifier(self, depth: float) -> float:
+    def fault_modifier(self, depth: float, x: float = 0.0, y: float = 0.0) -> float:
         """
         Fault probability multiplier scaled by pressure.
         1.0 at surface → 2.5 at 200 m depth (linear interpolation).
+        Uses spatially variable thermocline when position is provided.
         """
         p = self.pressure(depth)
         p_surface = self.pressure(0)

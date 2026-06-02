@@ -30,6 +30,11 @@ class CommsMesh:
         self._thermocline_messages = 0     # messages subject to thermocline penalty
         self._ocean_env = ocean_env
         self._amv_depths = amv_depths or {}
+
+        # Acoustic bandwidth constraint — per-link message budget
+        self._per_link_counts = {}     # {(sender, receiver): count} per timestep
+        self.congestion_drops = 0      # total messages dropped due to bandwidth
+
         self.rebuild_graph(amv_positions, amv_depths)
 
     # ── Graph construction ──────────────────────────────────────────────────
@@ -81,8 +86,12 @@ class CommsMesh:
                 if dist_3d < eff_range:
                     plp = self._packet_loss_prob(dist_3d, eff_range)
 
-                    # Thermocline penalty
-                    thermo = config.THERMOCLINE_DEPTH
+                    # Spatially variable thermocline
+                    if self._ocean_env is not None:
+                        thermo = self._ocean_env.local_thermocline(
+                            (pa[0] + pb[0]) / 2.0, (pa[1] + pb[1]) / 2.0)
+                    else:
+                        thermo = config.THERMOCLINE_DEPTH
                     if (da < thermo and db > thermo) or (da > thermo and db < thermo):
                         plp = min(1.0, plp + config.THERMOCLINE_PENALTY)
 
@@ -106,6 +115,15 @@ class CommsMesh:
             self._total_dropped += 1
             return False
 
+        # Acoustic bandwidth constraint — per-link message budget
+        link_key = (sender_id, receiver_id)
+        current_count = self._per_link_counts.get(link_key, 0)
+        if current_count >= config.MAX_MESSAGES_PER_LINK:
+            self.congestion_drops += 1
+            self._total_dropped += 1
+            return False
+        self._per_link_counts[link_key] = current_count + 1
+
         edge = self.graph.edges[sender_id, receiver_id]
         plp = edge["packet_loss_prob"]
 
@@ -127,6 +145,9 @@ class CommsMesh:
         """
         Return {receiver_id: [payloads]} for all messages ready for delivery.
         """
+        # Reset per-link bandwidth counts each timestep
+        self._per_link_counts = {}
+
         ready = defaultdict(list)
         remaining = []
         for delivery_ts, receiver_id, payload in self._message_queue:
@@ -142,13 +163,14 @@ class CommsMesh:
         return self.graph.copy()
 
     def log_packet_stats(self):
-        """Return total sent, total dropped, drop rate, and thermocline count."""
+        """Return total sent, total dropped, drop rate, thermocline count, and congestion."""
         drop_rate = self._total_dropped / max(self._total_sent, 1)
         return {
             "total_sent": self._total_sent,
             "total_dropped": self._total_dropped,
             "drop_rate": drop_rate,
             "thermocline_messages": self._thermocline_messages,
+            "congestion_drops": self.congestion_drops,
         }
 
     def algebraic_connectivity(self):

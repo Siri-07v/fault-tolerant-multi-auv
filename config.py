@@ -139,3 +139,18 @@ N_RESPAWN_TASKS = 5            # number of new tasks to spawn per batch
 DVL_DRIFT_RATE = 0.12          # meters of drift per meter traveled (12% DVL error)
 DVL_FAULT_DRIFT_MULTIPLIER = 8.0  # drift multiplier when sensor_failure active
 DVL_RESET_ON_SURFACE = True    # drift resets at <10m depth (simulated GPS fix)
+
+# ─── Misclassification Injection ──────────────────────────────────────────
+INJECT_MISCLASSIFICATION = False
+MISCLASSIFICATION_TARGET_AMV = 1
+
+# ─── Stress Testing ──────────────────────────────────────────────────────
+STRESS_SCENARIO = 'none'       # options: 'none', 'amv_loss', 'comm_blackout', 'mass_fault'
+STRESS_START_TIMESTEP = 150
+STRESS_END_TIMESTEP = 300
+
+# ─── Acoustic Bandwidth Constraint ───────────────────────────────────────
+MAX_MESSAGES_PER_LINK = 5
+
+# ─── Fixed Seed (set to None for time-based, or an int for deterministic) ─
+FIXED_SEED = None

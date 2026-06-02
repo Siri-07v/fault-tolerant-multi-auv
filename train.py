@@ -143,10 +143,11 @@ def train():
     ax.set_xlabel("Predicted")
     ax.set_ylabel("True")
     ax.set_title("Confusion Matrix — Test Set")
+    plt.xticks(rotation=45, ha='right')
     fig.tight_layout()
-    fig.savefig("confusion_matrix.png", dpi=150)
+    fig.savefig("plot_confusion_matrix.png", dpi=150)
     plt.close(fig)
-    print("Saved confusion_matrix.png")
+    print("Saved plot_confusion_matrix.png")
 
 
 if __name__ == "__main__":

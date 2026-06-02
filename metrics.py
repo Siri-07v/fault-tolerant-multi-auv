@@ -130,8 +130,9 @@ def print_report(tasks, completion_timestamps, total_timesteps,
                  total_sent, total_dropped,
                  energy_log, tasks_completed_count,
                  auction_iterations_log, connectivity_log,
-                 physics_log, thermocline_messages):
-    """Print all 12 metrics in a clean aligned table."""
+                 physics_log, thermocline_messages,
+                 congestion_drops=0):
+    """Print all 13 metrics in a clean aligned table."""
 
     metrics = [
         ("Task Completion Rate",
@@ -158,6 +159,8 @@ def print_report(tasks, completion_timestamps, total_timesteps,
          f"{physics_impact_on_faults(physics_log, fault_log):+.3f} (correlation)"),
         ("Thermocline Crossing Penalty",
          f"{thermocline_crossing_penalty(thermocline_messages, total_sent):.2%}"),
+        ("Congestion Drop Rate",
+         f"{congestion_drops / max(total_sent, 1):.2%} ({congestion_drops} drops)"),
     ]
 
     width = max(len(m[0]) for m in metrics)

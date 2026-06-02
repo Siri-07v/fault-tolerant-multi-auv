@@ -83,10 +83,11 @@ class SymbolicRuleEngine:
 
     # ── Rule 3 — Energy Floor ───────────────────────────────────────────────
 
-    def check_energy_floor(self, amv: Any, task: Any) -> RuleVerdict:
+    def check_energy_floor(self, amv: Any, task: Any, remaining_tasks: int = 15) -> RuleVerdict:
         """Veto task assignment if AMV cannot complete it with safe energy reserve."""
         ENERGY_PER_METER = 0.05
-        SAFE_RESERVE = 20.0
+        # Relax reserve when near the end of the mission
+        SAFE_RESERVE = 10.0 if remaining_tasks <= 3 else 20.0
 
         est_pos = getattr(amv, "estimated_position", None)
         amv_pos = getattr(amv, "position", None)
@@ -309,7 +310,7 @@ class SymbolicRuleEngine:
         })
 
     def evaluate_pre_assignment(
-        self, amv: Any, task: Any, all_amvs: List[Any]
+        self, amv: Any, task: Any, all_amvs: List[Any], remaining_tasks: int = 15
     ) -> List[RuleVerdict]:
         """Run rules 2, 3, 4, 5, 6 before task assignment."""
         amv_id = getattr(amv, "amv_id", None)
@@ -317,7 +318,7 @@ class SymbolicRuleEngine:
 
         for rule_fn in [
             lambda: self.check_depth_entry_veto(amv),
-            lambda: self.check_energy_floor(amv, task),
+            lambda: self.check_energy_floor(amv, task, remaining_tasks),
             lambda: self.check_confidence_gate(amv),
             lambda: self.check_collision_radius(amv, all_amvs, task),
             lambda: self.check_priority_override(task, all_amvs),
@@ -333,13 +334,16 @@ class SymbolicRuleEngine:
         amv_id = getattr(amv, "amv_id", None)
         verdicts: List[RuleVerdict] = []
 
-        for rule_fn in [
-            lambda: self.check_speed_cap(amv),
-            lambda: self.check_depth_entry_veto(amv),
-        ]:
-            v = rule_fn()
-            self._log_verdict(v, amv_id)
-            verdicts.append(v)
+        # Rule 1
+        v1 = self.check_speed_cap(amv)
+        self._log_verdict(v1, amv_id)
+        verdicts.append(v1)
+
+        # Rule 2 (only run if state is sensor_failure)
+        if getattr(amv, "fault_state", "normal") == "sensor_failure":
+            v2 = self.check_depth_entry_veto(amv)
+            self._log_verdict(v2, amv_id)
+            verdicts.append(v2)
 
         return verdicts
 
@@ -358,10 +362,10 @@ class SymbolicRuleEngine:
         return verdicts
 
     def is_assignment_safe(
-        self, amv: Any, task: Any, all_amvs: List[Any]
+        self, amv: Any, task: Any, all_amvs: List[Any], remaining_tasks: int = 15
     ) -> bool:
         """Return True only if no pre-assignment rule issues a veto."""
-        verdicts = self.evaluate_pre_assignment(amv, task, all_amvs)
+        verdicts = self.evaluate_pre_assignment(amv, task, all_amvs, remaining_tasks)
         return all(v.allowed for v in verdicts)
 
     def get_speed_cap(self, amv: Any) -> float:

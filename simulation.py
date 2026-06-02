@@ -74,6 +74,11 @@ class AMV:
         self.ocean_env = ocean_env
         self._depth_phase = random.uniform(0, 2 * 3.14159)  # random phase
 
+        # ── Dive state machine (descend / hold / ascend) ───────────────────
+        self.dive_phase = 'descend'
+        self.target_depth = random.uniform(config.DEPTH_MIN, config.DEPTH_MAX)
+        self.depth_hold_timer = 0
+
         # ── DVL dead reckoning drift ───────────────────────────────────────
         self.estimated_position = self.position.copy()
         self.dvl_drift_error = np.array([0.0, 0.0])
@@ -164,6 +169,42 @@ class AMV:
         self.estimated_position = self.position + self.dvl_drift_error
         self.total_dvl_drift = float(np.linalg.norm(self.dvl_drift_error))
 
+    # ── Dive state machine ─────────────────────────────────────────────────
+
+    def _update_dive_profile(self):
+        """
+        Three-phase dive state machine producing realistic descend-hold-ascend
+        depth profiles.  Called once per movement timestep.
+        """
+        import math
+        if self.dive_phase == 'descend':
+            self.depth += 0.8
+            if self.depth >= self.target_depth:
+                self.depth = self.target_depth
+                self.dive_phase = 'hold'
+                self.depth_hold_timer = random.randint(30, 80)
+        elif self.dive_phase == 'hold':
+            self.depth += random.gauss(0, 1.5)
+            self.depth_hold_timer -= 1
+            if self.depth_hold_timer <= 0:
+                self.dive_phase = 'ascend'
+                self.target_depth = random.uniform(config.DEPTH_MIN, config.DEPTH_MAX)
+        elif self.dive_phase == 'ascend':
+            self.depth -= 0.8
+            if self.depth <= config.DEPTH_MIN + 5:
+                self.depth = config.DEPTH_MIN + 5
+                self.dive_phase = 'descend'
+                self.target_depth = random.uniform(config.DEPTH_MIN, config.DEPTH_MAX)
+
+        # Clamp to valid range
+        self.depth = max(config.DEPTH_MIN, min(config.DEPTH_MAX, self.depth))
+
+        # DVL GPS reset when near surface during ascend
+        if self.dive_phase == 'ascend' and self.depth < 10.0:
+            if config.DVL_RESET_ON_SURFACE:
+                self.dvl_drift_error = np.array([0.0, 0.0])
+                self.estimated_position = self.position.copy()
+
     # ── Sensor replay ──────────────────────────────────────────────────────
 
     def push_sensor_reading(self):
@@ -206,7 +247,7 @@ class AMV:
 
         # Depth-coupled fault escalation
         if self.ocean_env is not None:
-            modifier = self.ocean_env.fault_modifier(self.depth)
+            modifier = self.ocean_env.fault_modifier(self.depth, self.position[0], self.position[1])
             if (modifier > 2.0
                     and self.fault_state == "normal"
                     and random.random() < config.DEPTH_FAULT_ESCALATION_PROB):
@@ -226,7 +267,7 @@ class AMV:
         if self.ocean_env is None:
             return
 
-        modifier = self.ocean_env.fault_modifier(self.depth)
+        modifier = self.ocean_env.fault_modifier(self.depth, self.position[0], self.position[1])
 
         # Weighted class selection
         if modifier < 1.2:
@@ -319,19 +360,17 @@ class AMV:
         self.distance_traveled += distance_moved
         self.update_dvl_drift(distance_moved)
 
-        # Pressure-scaled energy cost
+        # Non-linear battery discharge — accelerates at low energy
+        discharge_multiplier = 1.0 + max(0.0, (50.0 - self.energy) / 50.0) * 0.5
         if self.ocean_env is not None:
-            pressure = self.ocean_env.pressure(self.depth)
-            cost = config.ENERGY_MOVE_COST * (1.0 + pressure / 10.0)
+            pressure_factor = 1.0 + self.ocean_env.pressure(self.depth) / 10.0
         else:
-            cost = config.ENERGY_MOVE_COST
-        self.energy = max(0.0, self.energy - cost)
+            pressure_factor = 1.0
+        actual_cost = config.ENERGY_MOVE_COST * discharge_multiplier * pressure_factor
+        self.energy = max(0.0, self.energy - actual_cost)
 
-        # Slowly vary depth (sinusoidal oscillation simulating dive ops)
-        import math
-        self.depth = config.DEPTH_MIN + (config.DEPTH_MAX - config.DEPTH_MIN) * (
-            0.5 + 0.5 * math.sin(self._depth_phase + current_timestep / 80.0))
-        self.depth = max(config.DEPTH_MIN, min(config.DEPTH_MAX, self.depth))
+        # Dive state machine — realistic descend-hold-ascend cycles
+        self._update_dive_profile()
 
         self.trajectory.append(self.position.copy())
 
@@ -374,13 +413,13 @@ class AMV:
             self.position += move_vec
             self.distance_traveled += step
 
-        # Still drain energy at base idle rate
-        self.energy = max(0.0, self.energy - config.ENERGY_MOVE_COST * 0.3)
+        # Non-linear battery discharge for patrol movement
+        discharge_multiplier = 1.0 + max(0.0, (50.0 - self.energy) / 50.0) * 0.5
+        patrol_cost = config.ENERGY_MOVE_COST * 0.3 * discharge_multiplier
+        self.energy = max(0.0, self.energy - patrol_cost)
 
-        # Depth oscillation
-        self.depth = config.DEPTH_MIN + (config.DEPTH_MAX - config.DEPTH_MIN) * (
-            0.5 + 0.5 * math.sin(self._depth_phase + current_timestep / 80.0))
-        self.depth = max(config.DEPTH_MIN, min(config.DEPTH_MAX, self.depth))
+        # Dive state machine — realistic descend-hold-ascend cycles
+        self._update_dive_profile()
 
         self.trajectory.append(self.position.copy())
 
