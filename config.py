@@ -83,6 +83,10 @@ PRIORITY_WEIGHT_MAX = 1.5
 
 # ─── CBBA (legacy, kept for reference) ──────────────────────────────────────────
 MAX_CONSENSUS_ITERATIONS = 10
+ALLOCATOR_MODE = "auction"  # "auction" | "cbba" | "vanilla_auction"
+SAVE_PLOTS = True
+
+
 
 # ─── Miele et al. benefit function parameters ──────────────────────────────────
 BENEFIT_A = 0.15            # sigmoid steepness (shallower = more bidding competition)
@@ -92,6 +96,7 @@ BENEFIT_TW = 40             # max waiting time before priority term activates (t
 TASK_DWELL_TIME = 8         # timesteps AMV spends serving before task completes
 MAX_AUCTION_ITERATIONS = 6  # fewer iterations, more unresolved conflicts
 EDMC_RESET_ON_ASSIGNMENT = True
+DEADLOCK_TIMEOUT = 30
 
 # ─── FSM state names ───────────────────────────────────────────────────────────
 FSM_HOMING = "Homing"
@@ -121,7 +126,7 @@ THERMOCLINE_PENALTY = 0.15     # extra packet loss across thermocline
 EPSILON_LAMBDA = 0.05          # algebraic connectivity threshold
 
 # ─── Live 3D Visualization ─────────────────────────────────────────────────────
-LIVE_VIZ_ENABLED = True
+LIVE_VIZ_ENABLED = False
 
 # ─── Idle Energy Drain ────────────────────────────────────────────────────────
 IDLE_ENERGY_DRAIN = 0.01       # percent per timestep for onboard systems
@@ -154,3 +159,29 @@ MAX_MESSAGES_PER_LINK = 5
 
 # ─── Fixed Seed (set to None for time-based, or an int for deterministic) ─
 FIXED_SEED = None
+
+# ─── Telemetry Logging ──────────────────────────────────────────────────
+TELEMETRY_LOG_PATH = None
+
+# ─── Security / Adversarial Settings ───────────────────────────────────────
+COMPROMISED_AMVS = []  # List of AMV IDs that are compromised
+BYZANTINE_MODE = None  # Options: None, "inflate_priority", "mask_fault_state"
+
+# TrustScore Settings
+TRUST_UPDATE_INTERVAL = 10
+TRUST_DECAY_RATE = 0.3
+TRUST_THRESHOLD = 0.4
+TRUST_TOLERANCE = 0.30  # ±30% speed deviation tolerance
+
+# Message Integrity Spoofing / Tampering
+SPOOF_MESSAGES = []  # List of message types (e.g. ["auction"]) or link tuples (e.g. [(1, 2)]) to spoof
+SPOOF_MODE = None  # None | "corrupt_payload" | "bypass_checksum"
+SPOOFED_TASK_ID = None  # Optional task ID to force in spoofed auction bids
+
+# GPS Spoofing / Tampering at Surface
+GPS_SPOOF_ENABLED = False
+GPS_SPOOF_OFFSET = (0.0, 0.0)  # (dx, dy) in meters
+GPS_SANITY_THRESHOLD = 30.0    # maximum allowed discrepancy between GPS and DVL estimate (meters)
+
+
+

@@ -1185,3 +1185,146 @@ def plot_confidence_histogram(confidence_log, filename='plot_confidence_histogra
     plt.close(fig)
     print(f"Saved {filename}")
 
+
+def plot_allocator_comparison_completion(results_df, filename='plot_allocator_comparison_completion.png'):
+    """
+    Plots Task Completion Rate over time for Auction vs CBBA across the 4 scenarios.
+    """
+    scenarios = ['none', 'amv_loss', 'comm_blackout', 'mass_fault']
+    scenario_titles = {
+        'none': 'Nominal (No Stress)',
+        'amv_loss': 'AMV Loss Stress Scenario',
+        'comm_blackout': 'Comm Blackout Stress Scenario',
+        'mass_fault': 'Mass Fault Stress Scenario'
+    }
+
+    fig, axes = plt.subplots(2, 2, figsize=(15, 11), sharex=True, sharey=True)
+    axes = axes.flatten()
+
+    for idx, sc in enumerate(scenarios):
+        ax = axes[idx]
+        ax.set_facecolor('#fafafa')
+        
+        # Filter scenario data
+        sc_data = results_df[results_df['scenario'] == sc]
+        
+        for alloc, color, label in [('auction', '#1565C0', 'Auction + EDMC (Proposed)'),
+                                    ('cbba', '#E65100', 'CBBA (Baseline)')]:
+            alloc_data = sc_data[sc_data['allocator'] == alloc]
+            if alloc_data.empty:
+                continue
+            
+            # Group by timestep and calculate mean/std
+            grouped = alloc_data.groupby('timestep')['tasks_completed'].agg(['mean', 'std']).reset_index()
+            t_vals = grouped['timestep']
+            mean_rate = grouped['mean'] / config.N_TASKS
+            std_rate = grouped['std'].fillna(0) / config.N_TASKS
+            
+            ax.plot(t_vals, mean_rate, color=color, linewidth=2.5, label=label)
+            ax.fill_between(t_vals, np.clip(mean_rate - std_rate, 0, 1), np.clip(mean_rate + std_rate, 0, 1),
+                            color=color, alpha=0.15)
+            
+        ax.set_title(scenario_titles[sc], fontsize=12, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        ax.set_ylim(-0.05, 1.05)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+        
+        # Stress line at t=150
+        if sc != 'none':
+            ax.axvline(x=150, color='#7f8c8d', linestyle=':', linewidth=1.5, zorder=1)
+            ax.text(152, 0.5, 'Stress Injected', color='#7f8c8d', rotation=90, fontsize=8, va='center')
+
+        if idx in [2, 3]:
+            ax.set_xlabel('Timestep', fontweight='bold')
+        if idx in [0, 2]:
+            ax.set_ylabel('Task Completion Rate', fontweight='bold')
+
+    # Add single legend
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=2, fontsize=10)
+    fig.suptitle('Task Completion Rate Over Time: Auction vs CBBA', fontsize=16, fontweight='bold', y=1.02)
+    fig.tight_layout()
+    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {filename}")
+
+
+def plot_allocator_comparison_deadlock_recovery(results_df, filename='plot_allocator_comparison_deadlock_recovery.png'):
+    """
+    Plots recovery timeline showing CBBA stalling vs Auction resolving via EDMC.
+    """
+    stress_scenarios = ['amv_loss', 'mass_fault']
+    scenario_titles = {
+        'amv_loss': 'AMV Loss (2 Vehicles Lost at t=150)',
+        'mass_fault': 'Mass Fault (3 Vehicles Degraded at t=150)'
+    }
+
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.5))
+    twin_ax_legend = None
+    
+    for idx, sc in enumerate(stress_scenarios):
+        ax1 = axes[idx]
+        ax1.set_facecolor('#fafafa')
+        
+        # Filter scenario data
+        sc_data = results_df[results_df['scenario'] == sc]
+        
+        # Plot Task Completion Rate on left axis
+        ax1.set_xlabel('Timestep', fontweight='bold')
+        ax1.set_ylabel('Task Completion Rate (Solid Line)', color='#333333', fontweight='bold')
+        ax1.tick_params(axis='y', labelcolor='#333333')
+        
+        # Secondary axis for stalled AMVs
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('Active Stalled AMVs (Dashed Line)', color='#7f8c8d', fontweight='bold')
+        ax2.tick_params(axis='y', labelcolor='#7f8c8d')
+        ax2.set_ylim(-0.2, config.N_AMVS + 0.2)
+        if idx == 0:
+            twin_ax_legend = ax2
+        
+        # Plot Auction
+        auc_data = sc_data[sc_data['allocator'] == 'auction']
+        if not auc_data.empty:
+            auc_grouped = auc_data.groupby('timestep')[['tasks_completed', 'stalled_amvs']].mean().reset_index()
+            ax1.plot(auc_grouped['timestep'], auc_grouped['tasks_completed'] / config.N_TASKS,
+                     color='#1565C0', linewidth=2.5, label='Auction Completion')
+            ax2.plot(auc_grouped['timestep'], auc_grouped['stalled_amvs'],
+                     color='#2196F3', linewidth=1.5, linestyle='--', label='Auction Stalled')
+            
+        # Plot CBBA
+        cbba_data = sc_data[sc_data['allocator'] == 'cbba']
+        if not cbba_data.empty:
+            cbba_grouped = cbba_data.groupby('timestep')[['tasks_completed', 'stalled_amvs']].mean().reset_index()
+            ax1.plot(cbba_grouped['timestep'], cbba_grouped['tasks_completed'] / config.N_TASKS,
+                     color='#E65100', linewidth=2.5, label='CBBA Completion')
+            ax2.plot(cbba_grouped['timestep'], cbba_grouped['stalled_amvs'],
+                     color='#FF9800', linewidth=1.5, linestyle='--', label='CBBA Stalled')
+
+        ax1.grid(True, alpha=0.3)
+        ax1.set_ylim(-0.05, 1.05)
+        ax1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+        
+        # Stress line at t=150
+        ax1.axvline(x=150, color='red', linestyle=':', linewidth=1.5, zorder=1)
+        ax1.text(152, 0.05, 'Stress Injected', color='red', fontsize=8, fontweight='bold')
+        
+        ax1.set_title(scenario_titles[sc], fontsize=12, fontweight='bold')
+
+    # Collect legend handles
+    handles = []
+    labels = []
+    for ax in [axes[0], twin_ax_legend]:
+        if ax is not None:
+            h, l = ax.get_legend_handles_labels()
+            handles.extend(h)
+            labels.extend(l)
+            
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=4, fontsize=10)
+    
+    fig.suptitle('Allocator Deadlock Recovery & Stalling Under Stress Scenarios', fontsize=16, fontweight='bold', y=1.02)
+    fig.tight_layout()
+    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {filename}")
+
+

@@ -366,7 +366,13 @@ class SymbolicRuleEngine:
     ) -> bool:
         """Return True only if no pre-assignment rule issues a veto."""
         verdicts = self.evaluate_pre_assignment(amv, task, all_amvs, remaining_tasks)
-        return all(v.allowed for v in verdicts)
+        safe = True
+        for v in verdicts:
+            if not v.allowed:
+                safe = False
+                t = len(getattr(amv, 'fsm_history', []))
+                print(f"  [T={t}] AMV{getattr(amv, 'amv_id', -1)} | Rule:{v.rule_name} | VETO | {v.reason}")
+        return safe
 
     def get_speed_cap(self, amv: Any) -> float:
         """Return the speed cap for the given AMV based on its fault state."""

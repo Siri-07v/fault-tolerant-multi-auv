@@ -48,14 +48,17 @@ class AMV:
         self.fault_state = "normal"
         self.availability = 1.0
         self.assigned_task = None  # Task object or None
+        self.task_assigned_duration = 0
         self.sensor_buffer = deque(maxlen=config.WINDOW_SIZE)
 
         # ── FSM state (Miele et al. LFSM) ──────────────────────────────────
         self.fsm_state = config.FSM_HOMING
         self.dwell_timer = 0              # counts down in Serving state
 
-        # ── EDMC proposal ───────────────────────────────────────────────────
+        # ── EDMC proposal ──────────────────────────────────────────────────────
         self.m_p_i = -1                   # proposal value for EDMC
+        self.deadlock_ticks = 0           # ticks spent in FSM_DEADLOCK state
+        self.paused_until_timestep = 0
 
         # Fault injection: replay sensor data from a CSV
         self._replay_data = pd.read_csv(replay_csv_path)[config.SENSOR_COLUMNS].values
@@ -68,6 +71,11 @@ class AMV:
         self.tasks_completed = []
         self.fault_history = []  # list of (timestep, fault_state)
         self.distance_traveled = 0.0
+
+        # Trust scoring
+        self.trust_score = 1.0
+        self.consecutive_trust_violations = 0
+        self.declared_fault_state = "normal"
 
         # ── Depth & physics ─────────────────────────────────────────────────
         self.depth = random.uniform(config.DEPTH_MIN, config.DEPTH_MAX)
@@ -149,9 +157,21 @@ class AMV:
         """
         import math
         # Reset drift if near surface — simulated GPS fix
-        if config.DVL_RESET_ON_SURFACE and self.depth < 10.0:
-            self.dvl_drift_error = np.array([0.0, 0.0])
-            self.estimated_position = self.position.copy()
+        if config.DVL_RESET_ON_SURFACE and self.depth < 16.0:
+            if getattr(config, "GPS_SPOOF_ENABLED", False) and self.amv_id in getattr(config, "COMPROMISED_AMVS", []):
+                offset = np.array(getattr(config, "GPS_SPOOF_OFFSET", (0.0, 0.0)), dtype=np.float64)
+                gps_fix = self.position + offset
+            else:
+                offset = np.array([0.0, 0.0])
+                gps_fix = self.position.copy()
+                
+            discrepancy = float(np.linalg.norm(gps_fix - self.estimated_position))
+            if discrepancy > getattr(config, "GPS_SANITY_THRESHOLD", 30.0):
+                t = len(getattr(self, "fsm_history", []))
+                print(f"  [GPS SPOOF DETECTED] t={t}: AMV{self.amv_id} rejected anomalous GPS fix! Discrepancy: {discrepancy:.1f}m")
+            else:
+                self.dvl_drift_error = offset.copy()
+                self.estimated_position = self.position + offset
             return
 
         # Drift rate depends on fault state
@@ -200,10 +220,22 @@ class AMV:
         self.depth = max(config.DEPTH_MIN, min(config.DEPTH_MAX, self.depth))
 
         # DVL GPS reset when near surface during ascend
-        if self.dive_phase == 'ascend' and self.depth < 10.0:
+        if self.dive_phase == 'ascend' and self.depth < 16.0:
             if config.DVL_RESET_ON_SURFACE:
-                self.dvl_drift_error = np.array([0.0, 0.0])
-                self.estimated_position = self.position.copy()
+                if getattr(config, "GPS_SPOOF_ENABLED", False) and self.amv_id in getattr(config, "COMPROMISED_AMVS", []):
+                    offset = np.array(getattr(config, "GPS_SPOOF_OFFSET", (0.0, 0.0)), dtype=np.float64)
+                    gps_fix = self.position + offset
+                else:
+                    offset = np.array([0.0, 0.0])
+                    gps_fix = self.position.copy()
+                    
+                discrepancy = float(np.linalg.norm(gps_fix - self.estimated_position))
+                if discrepancy > getattr(config, "GPS_SANITY_THRESHOLD", 30.0):
+                    t = len(getattr(self, "fsm_history", []))
+                    print(f"  [GPS SPOOF DETECTED] t={t}: AMV{self.amv_id} rejected anomalous GPS fix! Discrepancy: {discrepancy:.1f}m")
+                else:
+                    self.dvl_drift_error = offset.copy()
+                    self.estimated_position = self.position + offset
 
     # ── Sensor replay ──────────────────────────────────────────────────────
 
@@ -218,6 +250,18 @@ class AMV:
     def compute_availability(self):
         base = config.AVAILABILITY.get(self.fault_state, 1.0)
         self.availability = base * (self.energy / 100.0)
+        
+        # Keep declared_fault_state updated, unless overridden by Byzantine masking
+        is_byzantine_mask = (
+            getattr(config, "BYZANTINE_MODE", None) == "mask_fault_state"
+            and getattr(config, "COMPROMISED_AMVS", None)
+            and self.amv_id in config.COMPROMISED_AMVS
+        )
+        if is_byzantine_mask:
+            self.declared_fault_state = "normal"
+        else:
+            self.declared_fault_state = self.fault_state
+            
         return self.availability
 
     # ── Fault detection ─────────────────────────────────────────────────────
@@ -252,6 +296,17 @@ class AMV:
                     and self.fault_state == "normal"
                     and random.random() < config.DEPTH_FAULT_ESCALATION_PROB):
                 self.fault_state = "actuator_degraded_mild"
+
+        # Update declared_fault_state after fault state updates
+        is_byzantine_mask = (
+            getattr(config, "BYZANTINE_MODE", None) == "mask_fault_state"
+            and getattr(config, "COMPROMISED_AMVS", None)
+            and self.amv_id in config.COMPROMISED_AMVS
+        )
+        if is_byzantine_mask:
+            self.declared_fault_state = "normal"
+        else:
+            self.declared_fault_state = self.fault_state
 
     # ── Dynamic CSV switching (R4F4) ─────────────────────────────────────────
 
@@ -412,6 +467,7 @@ class AMV:
             move_vec = (direction / dist) * step
             self.position += move_vec
             self.distance_traveled += step
+            self.update_dvl_drift(step)
 
         # Non-linear battery discharge for patrol movement
         discharge_multiplier = 1.0 + max(0.0, (50.0 - self.energy) / 50.0) * 0.5
@@ -482,6 +538,8 @@ class AMV:
         In Reaching state: enter Deadlock if availability drops below threshold.
         This replaces the paper's connectivity-based deadlock with fault-based.
         """
+        if config.ALLOCATOR_MODE == "vanilla_auction":
+            return False
         if self.fsm_state != config.FSM_REACHING:
             return False
         if self.availability < config.BID_AVAILABILITY_THRESHOLD:
@@ -506,10 +564,16 @@ class AMV:
     # ── Reallocation check (legacy, still used) ──────────────────────────────
 
     def should_reallocate(self):
-        return (
-            self.fault_state in ("actuator_degraded_severe", "sensor_failure")
-            or self.energy < config.ENERGY_REALLOC_THRESHOLD
-        )
+        if config.ALLOCATOR_MODE in ("auction", "vanilla_auction"):
+            return (
+                self.energy <= 0.0
+                or self.energy < config.ENERGY_REALLOC_THRESHOLD
+            )
+        else:
+            return (
+                self.fault_state in ("actuator_degraded_severe", "sensor_failure")
+                or self.energy < config.ENERGY_REALLOC_THRESHOLD
+            )
 
     def __repr__(self):
         task_id = self.assigned_task.task_id if self.assigned_task else None
