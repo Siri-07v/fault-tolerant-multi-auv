@@ -175,7 +175,10 @@ def generate_report(summary_df):
 
     report_text = "\n".join(report_content)
     
-    report_file = "recovery_optimization_report.md"
+    from datetime import datetime
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    os.makedirs("reports", exist_ok=True)
+    report_file = os.path.join("reports", f"recovery_optimization_report_{ts}.md")
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report_text)
     

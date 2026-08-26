@@ -13,7 +13,17 @@ import matplotlib.ticker
 import networkx as nx
 from mpl_toolkits.mplot3d import Axes3D
 
+import os
+
 import config
+
+LATEST_RUNS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "latest_runs")
+
+def _get_save_path(filename):
+    os.makedirs(LATEST_RUNS_DIR, exist_ok=True)
+    if os.path.isabs(filename):
+        return filename
+    return os.path.join(LATEST_RUNS_DIR, os.path.basename(filename))
 
 # ─── Global style ────────────────────────────────────────────────────────────────
 plt.style.use('seaborn-v0_8-whitegrid')
@@ -184,10 +194,10 @@ def plot_mission_space(amvs, tasks, initial_positions, reallocation_log,
     ax.set_xlabel('X Position (m)'); ax.set_ylabel('Y Position (m)')
     ax.set_aspect("equal"); ax.grid(True, alpha=0.3)
 
-    fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 2: Task Coverage Rate ─────────────────────────────────────────────────
@@ -240,9 +250,10 @@ def plot_task_coverage(log_df, reallocation_log, deadlock_log, completion_log,
     ax.yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1.0))
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 3: Per-AMV Availability ────────────────────────────────────────────────
@@ -293,9 +304,10 @@ def plot_availability(availability_log, fault_log, filename="plot_availability.p
     ax.set_ylim(0, 1.05)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 4: Fault State Gantt Chart ────────────────────────────────────────────
@@ -343,9 +355,10 @@ def plot_fault_gantt(fault_log, filename="plot_fault_gantt.png"):
     ax.legend(handles=patches, loc='upper left', bbox_to_anchor=(1.01, 1),
               borderaxespad=0, fontsize=8)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 5: Communication Graph Snapshots ──────────────────────────────────────
@@ -423,9 +436,10 @@ def plot_comm_graph_snapshots(graph_snapshots, energy_snapshots=None,
         ax.grid(True, alpha=0.2)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 6: Energy Depletion ───────────────────────────────────────────────────
@@ -484,9 +498,10 @@ def plot_energy(energy_log, reallocation_log_by_amv, fsm_deadlock_events=None,
     ax.legend(loc="best", fontsize=8)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 7: Total Benefit Evolution ────────────────────────────────────────────
@@ -538,9 +553,10 @@ def plot_total_benefit(benefit_snapshot_log, deadlock_log, completion_log,
     ax.set_title("Evolution of Total Benefit Over Time")
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 8: Per-AMV Proposal and EDMC Consensus ───────────────────────────────
@@ -636,9 +652,10 @@ def plot_edmc_proposals(proposal_log, mt_log, deadlock_log, completion_log,
     ax_bot.grid(True, alpha=0.3)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 9: 3D Space-Time Trajectory View ──────────────────────────────────────
@@ -709,9 +726,10 @@ def plot_3d_mission_space(trajectory_log, task_positions, completed_tasks,
     ax2.set_facecolor('#f0f4f8')
 
     plt.tight_layout()
-    plt.savefig('plot_3d_mission_space.png', bbox_inches='tight', dpi=150)
+    out_path = _get_save_path('plot_3d_mission_space.png')
+    plt.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close()
-    print("Saved plot_3d_mission_space.png")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 10: Physics Dashboard ──────────────────────────────────────────────────
@@ -816,9 +834,10 @@ def plot_physics_dashboard(physics_log, fault_log=None):
         ax.grid(True, alpha=0.3)
 
     plt.tight_layout(rect=[0, 0, 1, 0.94])
-    plt.savefig('plot_physics_dashboard.png', bbox_inches='tight', dpi=150)
+    out_path = _get_save_path('plot_physics_dashboard.png')
+    plt.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close()
-    print("Saved plot_physics_dashboard.png")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 11: Acoustic Communication Mesh Animation ─────────────────────────────
@@ -1033,9 +1052,10 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
               borderaxespad=0, fontsize=8)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 13: FSM Transition Diagram (Static) ───────────────────────────────────
@@ -1114,9 +1134,10 @@ def plot_fsm_diagram(filename='plot_fsm_diagram.png'):
 
     ax.axis('off')
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 14: CNN Classification Confidence Distribution ─────────────────────
@@ -1181,9 +1202,10 @@ def plot_confidence_histogram(confidence_log, filename='plot_confidence_histogra
     ax_right.grid(True, alpha=0.3)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 def plot_allocator_comparison_completion(results_df, filename='plot_allocator_comparison_completion.png'):
@@ -1244,9 +1266,10 @@ def plot_allocator_comparison_completion(results_df, filename='plot_allocator_co
     fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=2, fontsize=10)
     fig.suptitle('Task Completion Rate Over Time: Auction vs CBBA', fontsize=16, fontweight='bold', y=1.02)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 def plot_allocator_comparison_deadlock_recovery(results_df, filename='plot_allocator_comparison_deadlock_recovery.png'):
@@ -1323,8 +1346,9 @@ def plot_allocator_comparison_deadlock_recovery(results_df, filename='plot_alloc
     
     fig.suptitle('Allocator Deadlock Recovery & Stalling Under Stress Scenarios', fontsize=16, fontweight='bold', y=1.02)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 

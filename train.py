@@ -128,11 +128,11 @@ def train():
     ax.set_ylabel("Loss")
     ax.set_title("Training & Validation Loss")
     ax.legend()
-    ax.grid(True, alpha=0.3)
-    fig.tight_layout()
-    fig.savefig("loss_curves.png", dpi=150)
+    os.makedirs("latest_runs", exist_ok=True)
+    out_loss = os.path.join("latest_runs", "loss_curves.png")
+    fig.savefig(out_loss, dpi=150)
     plt.close(fig)
-    print("Saved loss_curves.png")
+    print(f"Saved {out_loss}")
 
     # ── Plot 2: Confusion matrix ────────────────────────────────────────────
     cm = confusion_matrix(all_labels, all_preds)
@@ -145,9 +145,10 @@ def train():
     ax.set_title("Confusion Matrix — Test Set")
     plt.xticks(rotation=45, ha='right')
     fig.tight_layout()
-    fig.savefig("plot_confusion_matrix.png", dpi=150)
+    out_cm = os.path.join("latest_runs", "plot_confusion_matrix.png")
+    fig.savefig(out_cm, dpi=150)
     plt.close(fig)
-    print("Saved plot_confusion_matrix.png")
+    print(f"Saved {out_cm}")
 
 
 if __name__ == "__main__":

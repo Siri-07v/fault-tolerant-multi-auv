@@ -245,7 +245,10 @@ def generate_report(summary_df):
     )
 
     # Save to report file
-    report_file = "report_10_4_cbba_comparison.md"
+    from datetime import datetime
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    os.makedirs("reports", exist_ok=True)
+    report_file = os.path.join("reports", f"report_10_4_cbba_comparison_{ts}.md")
     with open(report_file, "w") as f:
         f.write("\n".join(report_content))
     print(f"Saved formatted report section to {report_file}\n")

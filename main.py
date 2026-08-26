@@ -1165,7 +1165,7 @@ def main():
             json.dump(telemetry_log, f, indent=2)
         print(f"Saved telemetry log to {config.TELEMETRY_LOG_PATH}")
 
-    return {
+    results = {
         "log_df": log_df,
         "tasks": tasks,
         "completion_timestamps": completion_timestamps,
@@ -1190,6 +1190,15 @@ def main():
         "deadlock_timeout_fires": deadlock_timeout_fires,
         "amvs": amvs,
     }
+
+    # ── Archive run results for dashboard ────────────────────────────────────
+    try:
+        import run_archiver
+        run_archiver.archive_run(results, seed)
+    except Exception as e:
+        print(f"[WARNING] Run archiving failed: {e}")
+
+    return results
 
 
 if __name__ == "__main__":

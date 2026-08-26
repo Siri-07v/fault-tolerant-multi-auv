@@ -1,0 +1,98 @@
+{
+  "timestamp": "20260826_111528",
+  "datetime_iso": "2026-08-26T11:15:28.544215",
+  "seed": 23072,
+  "scenario": "none",
+  "allocator": "auction",
+  "n_amvs": 5,
+  "n_tasks": 15,
+  "simulation_timesteps": 500,
+  "metrics": {
+    "task_completion_rate": 0.7333333333333333,
+    "mean_task_completion_time": 121.0,
+    "system_throughput": 0.022,
+    "mean_amv_availability": 0.3920934462454591,
+    "fault_impact_score": 0.5456,
+    "deadlock_frequency": 0.6,
+    "mean_packet_loss_rate": 0.2825169693634196,
+    "energy_efficiency": 32.16429478454051,
+    "auction_convergence_rate": 1.5462962962962963,
+    "connectivity_maintenance": 1.0,
+    "physics_impact_on_faults": -0.07465732986522539,
+    "thermocline_crossing_penalty": 0.36030086222711427,
+    "congestion_drop_rate": 0.08347092276646487,
+    "congestion_drops": 455,
+    "mean_task_delay": 41.733333333333334,
+    "max_task_delay": 132.0,
+    "never_completed_tasks": 4,
+    "stalled_amv_timesteps": 0,
+    "total_deadlocks": 3
+  },
+  "amv_states": [
+    {
+      "amv_id": 0,
+      "energy": 19.09,
+      "fault_state": "load_fault",
+      "fsm_state": "Idle",
+      "tasks_completed": 6,
+      "distance_traveled": 1767.7
+    },
+    {
+      "amv_id": 1,
+      "energy": 18.6,
+      "fault_state": "load_fault",
+      "fsm_state": "Idle",
+      "tasks_completed": 2,
+      "distance_traveled": 1407.7
+    },
+    {
+      "amv_id": 2,
+      "energy": 22.82,
+      "fault_state": "load_fault",
+      "fsm_state": "Idle",
+      "tasks_completed": 1,
+      "distance_traveled": 1521.1
+    },
+    {
+      "amv_id": 3,
+      "energy": 29.27,
+      "fault_state": "normal",
+      "fsm_state": "Reaching",
+      "tasks_completed": 2,
+      "distance_traveled": 1226.0
+    },
+    {
+      "amv_id": 4,
+      "energy": 21.55,
+      "fault_state": "load_fault",
+      "fsm_state": "Idle",
+      "tasks_completed": 1,
+      "distance_traveled": 1429.1
+    }
+  ],
+  "images": [
+    "plot_3d_mission_space_20260826_111528.png",
+    "plot_allocator_comparison_completion_20260826_111528.png",
+    "plot_allocator_comparison_completion_postfix_20260826_111528.png",
+    "plot_allocator_comparison_deadlock_recovery_20260826_111528.png",
+    "plot_allocator_comparison_deadlock_recovery_postfix_20260826_111528.png",
+    "plot_availability_20260826_111528.png",
+    "plot_comm_graph_20260826_111528.png",
+    "plot_confidence_histogram_20260826_111528.png",
+    "plot_confusion_matrix_20260826_111528.png",
+    "plot_edmc_proposals_20260826_111528.png",
+    "plot_energy_20260826_111528.png",
+    "plot_fault_gantt_20260826_111528.png",
+    "plot_fsm_diagram_20260826_111528.png",
+    "plot_fsm_timeline_20260826_111528.png",
+    "plot_mission_space_20260826_111528.png",
+    "plot_physics_dashboard_20260826_111528.png",
+    "plot_post_fix_completion_20260826_111528.png",
+    "plot_task_coverage_20260826_111528.png",
+    "plot_total_benefit_20260826_111528.png",
+    "mesh_animation_20260826_111528.gif",
+    "confusion_matrix_20260826_111528.png",
+    "loss_curves_20260826_111528.png",
+    "plot_confusion_matrix_20260826_111528.png"
+  ]
+}

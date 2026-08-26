@@ -242,7 +242,10 @@ def generate_report(summary_df):
         "visualizes the recovery of the proposed Auction+EDMC system vs the permanent stalling (high stalled AMV counts) of CBBA."
     )
 
-    report_file = "report_10_4_cbba_comparison_postfix.md"
+    from datetime import datetime
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    os.makedirs("reports", exist_ok=True)
+    report_file = os.path.join("reports", f"report_10_4_cbba_comparison_postfix_{ts}.md")
     with open(report_file, "w", encoding="utf-8") as f:
         f.write("\n".join(report_content))
     print(f"Saved formatted report section to {report_file}\n")

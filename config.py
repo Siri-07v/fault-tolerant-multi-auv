@@ -126,7 +126,7 @@ THERMOCLINE_PENALTY = 0.15     # extra packet loss across thermocline
 EPSILON_LAMBDA = 0.05          # algebraic connectivity threshold
 
 # ─── Live 3D Visualization ─────────────────────────────────────────────────────
-LIVE_VIZ_ENABLED = False
+LIVE_VIZ_ENABLED = True
 
 # ─── Idle Energy Drain ────────────────────────────────────────────────────────
 IDLE_ENERGY_DRAIN = 0.01       # percent per timestep for onboard systems

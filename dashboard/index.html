@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUV Swarm Simulation Dashboard</title>
+    <meta name="description" content="Interactive dashboard for fault-tolerant multi-AUV simulation results, metrics, and run history.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
+                    <path d="M10 20 L16 10 L22 20 Z" fill="url(#grad1)" opacity="0.9"/>
+                    <circle cx="16" cy="18" r="2" fill="#0a0e1a"/>
+                    <defs>
+                        <linearGradient id="grad1" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#06b6d4"/>
+                            <stop offset="100%" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div>
+                    <h1>AUV Swarm</h1>
+                    <span class="subtitle">Simulation Dashboard</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Run History</h3>
+            <div class="run-list" id="runList">
+                <div class="empty-state">
+                    <p>No runs found yet.</p>
+                    <p class="hint">Run <code>python main.py</code> to generate data.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="auto-refresh-toggle">
+                <label class="toggle-label">
+                    <input type="checkbox" id="autoRefreshToggle" checked>
+                    <span class="toggle-slider"></span>
+                    Auto-refresh
+                </label>
+                <span class="refresh-indicator" id="refreshIndicator" title="Auto-refreshing...">⟳</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ────────────────────────────────────────────── -->
+    <main class="main-content" id="mainContent">
+        <!-- Welcome state -->
+        <div class="welcome-state" id="welcomeState">
+            <div class="welcome-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="35" stroke="url(#wgrad)" stroke-width="2" fill="none" opacity="0.3"/>
+                    <circle cx="40" cy="40" r="25" stroke="url(#wgrad)" stroke-width="2" fill="none" opacity="0.5"/>
+                    <path d="M30 50 L40 28 L50 50 Z" fill="url(#wgrad)" opacity="0.7"/>
+                    <circle cx="40" cy="44" r="3" fill="#0a0e1a"/>
+                    <defs>
+                        <linearGradient id="wgrad" x1="0" y1="0" x2="80" y2="80">
+                            <stop offset="0%" stop-color="#06b6d4"/>
+                            <stop offset="100%" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2>Welcome to AUV Swarm Dashboard</h2>
+            <p>Select a run from the sidebar, or run <code>python main.py</code> to generate new simulation data.</p>
+            <p class="hint">The dashboard auto-refreshes every 10 seconds to detect new runs.</p>
+        </div>
+
+        <!-- Dashboard state (hidden until a run is selected) -->
+        <div class="dashboard-state" id="dashboardState" style="display:none;">
+            <!-- Header bar -->
+            <header class="dash-header">
+                <div class="run-info">
+                    <h2 id="runTitle">Run Details</h2>
+                    <div class="run-tags" id="runTags"></div>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <section class="kpi-section" id="kpiSection">
+                <div class="kpi-grid" id="kpiGrid"></div>
+            </section>
+
+            <!-- AMV Status Cards -->
+            <section class="section">
+                <h3 class="section-title">AMV Fleet Status</h3>
+                <div class="amv-grid" id="amvGrid"></div>
+            </section>
+
+            <!-- Image Gallery -->
+            <section class="section">
+                <h3 class="section-title">Simulation Plots</h3>
+                <div class="gallery-filter" id="galleryFilter"></div>
+                <div class="gallery-grid" id="galleryGrid"></div>
+            </section>
+
+            <!-- Trend Charts (cross-run comparison) -->
+            <section class="section" id="trendSection" style="display:none;">
+                <h3 class="section-title">Performance Trends Across Runs</h3>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h4>Task Completion Rate</h4>
+                        <canvas id="chartCompletion"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Deadlock Frequency</h4>
+                        <canvas id="chartDeadlock"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Mean Task Delay</h4>
+                        <canvas id="chartDelay"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Congestion Drop Rate</h4>
+                        <canvas id="chartCongestion"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ── Lightbox ────────────────────────────────────────────────── -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">✕</button>
+        <button class="lightbox-prev" id="lightboxPrev">‹</button>
+        <button class="lightbox-next" id="lightboxNext">›</button>
+        <div class="lightbox-content">
+            <img id="lightboxImg" src="" alt="Plot">
+            <p class="lightbox-caption" id="lightboxCaption"></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
