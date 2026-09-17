@@ -3,146 +3,804 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUV Swarm Simulation Dashboard</title>
-    <meta name="description" content="Interactive dashboard for fault-tolerant multi-AUV simulation results, metrics, and run history.">
+    <title>AUV Swarm Simulation Mission Control</title>
+    <meta name="description" content="Advanced Mission Control and Telemetry Dashboard for Fault-Tolerant Multi-AUV Swarm Simulations.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js & Style -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <!-- ── Sidebar ─────────────────────────────────────────────────── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <circle cx="16" cy="16" r="14" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
-                    <path d="M10 20 L16 10 L22 20 Z" fill="url(#grad1)" opacity="0.9"/>
-                    <circle cx="16" cy="18" r="2" fill="#0a0e1a"/>
-                    <defs>
-                        <linearGradient id="grad1" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#06b6d4"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <div>
-                    <h1>AUV Swarm</h1>
-                    <span class="subtitle">Simulation Dashboard</span>
+    <!-- Background Canvas for Ambient Oceanic Grid -->
+    <canvas id="ambientCanvas" class="ambient-canvas"></canvas>
+
+    <!-- App Container -->
+    <div class="app-layout">
+        <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <h2>AUV MISSION CONTROL</h2>
+                        <span class="brand-badge">TELEMETRY v2.4</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="sidebar-section">
-            <h3>Run History</h3>
-            <div class="run-list" id="runList">
-                <div class="empty-state">
-                    <p>No runs found yet.</p>
-                    <p class="hint">Run <code>python main.py</code> to generate data.</p>
+            <!-- Sidebar Quick Stats -->
+            <div class="sidebar-summary" id="sidebarSummary">
+                <div class="summary-stat">
+                    <span class="summary-label">Archived Runs</span>
+                    <span class="summary-val" id="sumTotalRuns">-</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="summary-label">Mean Completion</span>
+                    <span class="summary-val" id="sumAvgComp">-</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="summary-label">Active Scenario</span>
+                    <span class="summary-val highlight" id="sumLatestScenario">-</span>
                 </div>
             </div>
-        </div>
 
-        <div class="sidebar-footer">
-            <div class="auto-refresh-toggle">
-                <label class="toggle-label">
-                    <input type="checkbox" id="autoRefreshToggle" checked>
-                    <span class="toggle-slider"></span>
-                    Auto-refresh
-                </label>
-                <span class="refresh-indicator" id="refreshIndicator" title="Auto-refreshing...">⟳</span>
+            <!-- Run Filter & Search -->
+            <div class="sidebar-controls">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="runSearchInput" placeholder="Search seed, scenario, allocator..." autocomplete="off">
+                </div>
+
+                <div class="filter-pills" id="scenarioFilterPills">
+                    <button class="pill active" data-filter="all">All</button>
+                    <button class="pill" data-filter="none">Nominal</button>
+                    <button class="pill" data-filter="amv_loss">AMV Loss</button>
+                    <button class="pill" data-filter="blackout">Blackout</button>
+                    <button class="pill" data-filter="byzantine">Byzantine</button>
+                </div>
+
+                <div class="sort-row">
+                    <label for="sortRunsSelect">Sort:</label>
+                    <select id="sortRunsSelect">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="tcr-high">Completion (High to Low)</option>
+                        <option value="tcr-low">Completion (Low to High)</option>
+                        <option value="delay-low">Lowest Delay</option>
+                    </select>
+                </div>
             </div>
-        </div>
-    </aside>
 
-    <!-- ── Main Content ────────────────────────────────────────────── -->
-    <main class="main-content" id="mainContent">
-        <!-- Welcome state -->
-        <div class="welcome-state" id="welcomeState">
-            <div class="welcome-icon">
-                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                    <circle cx="40" cy="40" r="35" stroke="url(#wgrad)" stroke-width="2" fill="none" opacity="0.3"/>
-                    <circle cx="40" cy="40" r="25" stroke="url(#wgrad)" stroke-width="2" fill="none" opacity="0.5"/>
-                    <path d="M30 50 L40 28 L50 50 Z" fill="url(#wgrad)" opacity="0.7"/>
-                    <circle cx="40" cy="44" r="3" fill="#0a0e1a"/>
-                    <defs>
-                        <linearGradient id="wgrad" x1="0" y1="0" x2="80" y2="80">
-                            <stop offset="0%" stop-color="#06b6d4"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
+            <!-- Run List -->
+            <div class="sidebar-section">
+                <div class="section-heading">
+                    <span>Archived Mission Runs</span>
+                    <span class="count-badge" id="runCountBadge">0</span>
+                </div>
+                <div class="run-list" id="runList">
+                    <div class="empty-state">
+                        <p>No runs discovered.</p>
+                        <span class="hint">Execute <code>python main.py</code> to capture runs.</span>
+                    </div>
+                </div>
             </div>
-            <h2>Welcome to AUV Swarm Dashboard</h2>
-            <p>Select a run from the sidebar, or run <code>python main.py</code> to generate new simulation data.</p>
-            <p class="hint">The dashboard auto-refreshes every 10 seconds to detect new runs.</p>
-        </div>
 
-        <!-- Dashboard state (hidden until a run is selected) -->
-        <div class="dashboard-state" id="dashboardState" style="display:none;">
-            <!-- Header bar -->
-            <header class="dash-header">
-                <div class="run-info">
-                    <h2 id="runTitle">Run Details</h2>
-                    <div class="run-tags" id="runTags"></div>
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="footer-status-row">
+                    <div class="live-pulse-container">
+                        <span class="live-dot"></span>
+                        <span class="live-text">DAEMON POLLING</span>
+                    </div>
+                    <div class="auto-refresh-toggle">
+                        <label class="toggle-label" title="Toggle 10s automatic polling for new runs">
+                            <input type="checkbox" id="autoRefreshToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <button class="manual-refresh-btn" id="manualRefreshBtn" title="Force Refresh Now">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 4v6h-6"></path>
+                                <path d="M1 20v-6h6"></path>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── Main Workspace ──────────────────────────────────────────── -->
+        <main class="main-content" id="mainContent">
+            <!-- Global Top Navigation Bar -->
+            <header class="top-nav-bar">
+                <div class="nav-left">
+                    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle Sidebar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="active-run-pill" id="activeRunPill">
+                        <span class="status-indicator"></span>
+                        <span class="active-run-label" id="currentRunHeaderLabel">No Run Selected</span>
+                    </div>
+                </div>
+
+                <!-- Main Tabs Navigation -->
+                <nav class="nav-tabs" id="mainNavTabs">
+                    <button class="nav-tab active" data-tab="overview">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Overview</span>
+                    </button>
+                    <button class="nav-tab" data-tab="telemetry">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Fleet Subsystems</span>
+                    </button>
+                    <button class="nav-tab" data-tab="replay">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>Swarm Replay</span>
+                    </button>
+                    <button class="nav-tab" data-tab="plots">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span>Simulation Plots</span>
+                    </button>
+                    <button class="nav-tab" data-tab="comparator">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        <span>Run Comparator</span>
+                    </button>
+                    <button class="nav-tab" data-tab="benchmarks">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                        </svg>
+                        <span>Benchmark Suite</span>
+                    </button>
+                    <button class="nav-tab" data-tab="config">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Parameters</span>
+                    </button>
+                </nav>
+
+                <div class="nav-right">
+                    <div class="system-time" id="systemClock">00:00:00 UTC</div>
                 </div>
             </header>
 
-            <!-- KPI Cards -->
-            <section class="kpi-section" id="kpiSection">
-                <div class="kpi-grid" id="kpiGrid"></div>
-            </section>
-
-            <!-- AMV Status Cards -->
-            <section class="section">
-                <h3 class="section-title">AMV Fleet Status</h3>
-                <div class="amv-grid" id="amvGrid"></div>
-            </section>
-
-            <!-- Image Gallery -->
-            <section class="section">
-                <h3 class="section-title">Simulation Plots</h3>
-                <div class="gallery-filter" id="galleryFilter"></div>
-                <div class="gallery-grid" id="galleryGrid"></div>
-            </section>
-
-            <!-- Trend Charts (cross-run comparison) -->
-            <section class="section" id="trendSection" style="display:none;">
-                <h3 class="section-title">Performance Trends Across Runs</h3>
-                <div class="chart-grid">
-                    <div class="chart-card">
-                        <h4>Task Completion Rate</h4>
-                        <canvas id="chartCompletion"></canvas>
+            <!-- ── View: Welcome / Empty ─────────────────────────────────── -->
+            <div class="view-panel" id="viewWelcome" style="display:none;">
+                <div class="welcome-card">
+                    <div class="welcome-graphic">
+                        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                            <path d="M2 12h20"></path>
+                        </svg>
                     </div>
-                    <div class="chart-card">
-                        <h4>Deadlock Frequency</h4>
-                        <canvas id="chartDeadlock"></canvas>
+                    <h2>AUV Swarm Mission Control Telemetry</h2>
+                    <p>Select an archived simulation run from the sidebar, or execute a new simulation run in the terminal.</p>
+                    <div class="terminal-instruction">
+                        <code>python main.py</code>
                     </div>
-                    <div class="chart-card">
-                        <h4>Mean Task Delay</h4>
-                        <canvas id="chartDelay"></canvas>
+                    <div class="feature-bullets">
+                        <div class="bullet-item">
+                            <span class="bullet-dot"></span>
+                            <span>Real-Time Decentralized Auction Consensus &amp; CBBA Metrics</span>
+                        </div>
+                        <div class="bullet-item">
+                            <span class="bullet-dot"></span>
+                            <span>Interactive 2D/Depth Swarm Trajectory Replay</span>
+                        </div>
+                        <div class="bullet-item">
+                            <span class="bullet-dot"></span>
+                            <span>Multi-Run Statistical Benchmark Delta Analysis</span>
+                        </div>
                     </div>
-                    <div class="chart-card">
-                        <h4>Congestion Drop Rate</h4>
-                        <canvas id="chartCongestion"></canvas>
+                </div>
+            </div>
+
+            <!-- ── View 1: Mission Control Overview ───────────────────────── -->
+            <section class="view-panel active" id="viewOverview">
+                <!-- Metadata HUD Ribbon -->
+                <div class="hud-ribbon" id="hudRibbon">
+                    <div class="hud-item">
+                        <span class="hud-title">EXECUTION SEED</span>
+                        <span class="hud-data" id="hudSeed">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">ALLOCATION PROTOCOL</span>
+                        <span class="hud-data highlight" id="hudAllocator">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">INJECTED SCENARIO</span>
+                        <span class="hud-data" id="hudScenario">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">FLEET SIZE</span>
+                        <span class="hud-data" id="hudFleetSize">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">TOTAL TASKS</span>
+                        <span class="hud-data" id="hudTaskCount">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">HORIZON (TIMESTEPS)</span>
+                        <span class="hud-data" id="hudTimesteps">-</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-title">TIMESTAMP</span>
+                        <span class="hud-data" id="hudTimestamp">-</span>
+                    </div>
+                </div>
+
+                <!-- Primary KPI Grid -->
+                <div class="section-label">PRIMARY MISSION METRICS</div>
+                <div class="kpi-grid" id="primaryKpiGrid">
+                    <!-- Dynamic KPI cards inserted here -->
+                </div>
+
+                <!-- Secondary Split Overview: Visual Highlights + Fleet Matrix -->
+                <div class="overview-split-layout">
+                    <!-- Left: Fleet Quick Matrix -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3>Fleet Subsystem Status</h3>
+                                <span class="card-subtitle">Real-time readiness &amp; energy states</span>
+                            </div>
+                            <button class="card-action-btn" onclick="window.__switchTab('telemetry')">Detailed View &rarr;</button>
+                        </div>
+                        <div class="fleet-quick-table-wrapper">
+                            <table class="quick-table" id="quickFleetTable">
+                                <thead>
+                                    <tr>
+                                        <th>AMV</th>
+                                        <th>FSM State</th>
+                                        <th>Fault Status</th>
+                                        <th>Tasks</th>
+                                        <th>Distance</th>
+                                        <th>Energy</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quickFleetTableBody">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Quick Mission Visual -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3>Mission Trajectory &amp; Space</h3>
+                                <span class="card-subtitle">Final coordinate distribution</span>
+                            </div>
+                            <button class="card-action-btn" onclick="window.__switchTab('replay')">Launch Interactive Replay &rarr;</button>
+                        </div>
+                        <div class="quick-preview-image-container" id="quickPreviewImageContainer">
+                            <img id="overviewHeroImage" src="" alt="Mission Preview" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Trends Across Historical Runs -->
+                <div class="card panel-card" id="overviewTrendSection">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h3>Longitudinal Cross-Run Performance</h3>
+                            <span class="card-subtitle">Tracking metrics stability across consecutive runs</span>
+                        </div>
+                        <div class="chart-legend-custom" id="trendChartCustomLegend"></div>
+                    </div>
+                    <div class="chart-container-large">
+                        <canvas id="overviewCombinedChart"></canvas>
                     </div>
                 </div>
             </section>
-        </div>
-    </main>
 
-    <!-- ── Lightbox ────────────────────────────────────────────────── -->
+            <!-- ── View 2: AMV Fleet Subsystems & Telemetry ───────────────── -->
+            <section class="view-panel" id="viewTelemetry" style="display:none;">
+                <div class="view-header-row">
+                    <div>
+                        <h2>AMV Fleet Subsystem Telemetry</h2>
+                        <p class="section-desc">Detailed decentralized agent health, battery reserve, state transitions, and fault diagnostics.</p>
+                    </div>
+                </div>
+
+                <!-- AMV Cards Grid -->
+                <div class="amv-detailed-grid" id="amvDetailedGrid">
+                    <!-- Dynamic AMV cards inserted here -->
+                </div>
+
+                <!-- Secondary Subsystem Analytics Grid -->
+                <div class="telemetry-analytics-row">
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Task Allocation Share</h3>
+                            <span class="card-subtitle">Workload distribution per vehicle</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartTaskShare"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Energy Expenditure vs Distance</h3>
+                            <span class="card-subtitle">Propulsion &amp; comms efficiency</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartEnergyDistance"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Fleet Capability Radar</h3>
+                            <span class="card-subtitle">Multi-dimensional operational readiness</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartFleetRadar"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── View 3: Interactive Swarm Mission Replay ────────────────── -->
+            <section class="view-panel" id="viewReplay" style="display:none;">
+                <div class="replay-layout">
+                    <!-- Replay Header / Transport Controls -->
+                    <div class="replay-control-bar card">
+                        <div class="transport-group">
+                            <button class="transport-btn" id="replayBtnStart" title="Jump to start">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                                    <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line>
+                                </svg>
+                            </button>
+                            <button class="transport-btn" id="replayBtnStepBack" title="Step Back 1 Timestep">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="11 19 2 12 11 5 11 19"></polygon>
+                                </svg>
+                            </button>
+                            <button class="transport-btn primary-btn" id="replayBtnPlayPause" title="Play / Pause">
+                                <svg id="replayPlayIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                <svg id="replayPauseIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            </button>
+                            <button class="transport-btn" id="replayBtnStepForward" title="Step Forward 1 Timestep">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="13 19 22 12 13 5 13 19"></polygon>
+                                </svg>
+                            </button>
+                            <button class="transport-btn" id="replayBtnEnd" title="Jump to End">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                                    <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Scrubber & Time Display -->
+                        <div class="scrubber-group">
+                            <span class="replay-timestep-label" id="replayTimestepDisplay">t = 0 / 500</span>
+                            <div class="scrubber-track-container">
+                                <input type="range" id="replayScrubber" min="0" max="500" value="0" step="1">
+                                <div class="scrubber-progress-fill" id="scrubberFill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Speed & Layers -->
+                        <div class="replay-settings-group">
+                            <div class="speed-selector">
+                                <button class="speed-btn active" data-speed="1">1x</button>
+                                <button class="speed-btn" data-speed="2">2x</button>
+                                <button class="speed-btn" data-speed="5">5x</button>
+                                <button class="speed-btn" data-speed="10">10x</button>
+                            </div>
+                            <div class="layer-toggles">
+                                <label class="layer-chk" title="Show acoustic communication mesh links">
+                                    <input type="checkbox" id="chkCommsLinks" checked> Comms Mesh
+                                </label>
+                                <label class="layer-chk" title="Show trajectory trails">
+                                    <input type="checkbox" id="chkTrails" checked> Trails
+                                </label>
+                                <label class="layer-chk" title="Show acoustic comms range radius circles">
+                                    <input type="checkbox" id="chkCommsRadius"> Radii
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dual Interactive Replay Canvas (Top-Down Surface + Depth Profile) -->
+                    <div class="replay-visual-container">
+                        <!-- Left: Top-Down 2D Ocean Grid (1000m x 1000m) -->
+                        <div class="card canvas-card">
+                            <div class="canvas-header">
+                                <h4>Top-Down Mission Space (X-Y Plane: 1000m &times; 1000m)</h4>
+                                <span class="canvas-tag">SURFACE PROJECTION</span>
+                            </div>
+                            <div class="canvas-viewport" id="viewport2D">
+                                <canvas id="canvasMission2D"></canvas>
+                                <div class="canvas-overlay-hud" id="overlay2DHud">
+                                    <span id="hudActiveLinks">Acoustic Links: 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Depth Profile & Vehicle Inspector -->
+                        <div class="replay-side-stack">
+                            <!-- Elevation Depth Profile (X-Z Plane: Depth 0 to 200m) -->
+                            <div class="card canvas-card">
+                                <div class="canvas-header">
+                                    <h4>Bathymetric Depth Profile (X-Z Plane: 0 to 200m)</h4>
+                                    <span class="canvas-tag thermocline-tag">THERMOCLINE @ 100m</span>
+                                </div>
+                                <div class="canvas-viewport" id="viewportDepth">
+                                    <canvas id="canvasDepth"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Live Vehicle State Inspector at current timestep -->
+                            <div class="card vehicle-inspector-card">
+                                <div class="card-header">
+                                    <h4>Vehicle Telemetry at Current Timestep</h4>
+                                </div>
+                                <div class="vehicle-inspector-list" id="inspectorVehicleList">
+                                    <!-- Dynamic vehicle inspect rows -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── View 4: Simulation Plots & Media Hub ───────────────────── -->
+            <section class="view-panel" id="viewPlots" style="display:none;">
+                <div class="view-header-row">
+                    <div>
+                        <h2>Simulation Visual Analytics Hub</h2>
+                        <p class="section-desc">High-resolution diagnostic figures, convergence charts, and communication topologies.</p>
+                    </div>
+
+                    <!-- Plot Controls -->
+                    <div class="gallery-controls-bar">
+                        <div class="gallery-search-wrap">
+                            <input type="text" id="plotSearchInput" placeholder="Filter plots by name...">
+                        </div>
+                        <div class="gallery-filter-pills" id="plotCategoryPills">
+                            <!-- Category filter buttons -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plot Grid -->
+                <div class="gallery-grid" id="plotGalleryGrid">
+                    <!-- Dynamic plot cards -->
+                </div>
+            </section>
+
+            <!-- ── View 5: Run Comparator (Side-by-Side Diff) ─────────────── -->
+            <section class="view-panel" id="viewComparator" style="display:none;">
+                <div class="view-header-row">
+                    <div>
+                        <h2>Multi-Run Side-by-Side Comparator</h2>
+                        <p class="section-desc">Direct statistical delta and metric divergence analysis between any two simulation runs.</p>
+                    </div>
+                </div>
+
+                <!-- Run Selectors Row -->
+                <div class="comparator-selector-card card">
+                    <div class="comparator-select-box">
+                        <label for="compareSelectA">Run A (Baseline):</label>
+                        <select id="compareSelectA" class="select-styled"></select>
+                    </div>
+                    <div class="comparator-vs-badge">VS</div>
+                    <div class="comparator-select-box">
+                        <label for="compareSelectB">Run B (Comparison):</label>
+                        <select id="compareSelectB" class="select-styled"></select>
+                    </div>
+                </div>
+
+                <!-- Comparison Delta Table -->
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <h3>Metric Divergence Matrix</h3>
+                        <span class="card-subtitle">Direct absolute &amp; relative delta calculations</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="comparator-table" id="comparatorTable">
+                            <thead>
+                                <tr>
+                                    <th>Metric Description</th>
+                                    <th id="compHeaderA">Run A</th>
+                                    <th id="compHeaderB">Run B</th>
+                                    <th>Delta (B - A)</th>
+                                    <th>% Difference</th>
+                                    <th>Assessment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparatorTableBody">
+                                <!-- Dynamic comparison rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Visual Comparison Side-by-Side Plots -->
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h3>Synchronized Visual Comparison</h3>
+                            <span class="card-subtitle">Compare specific output plots side-by-side</span>
+                        </div>
+                        <div class="plot-select-group">
+                            <label for="syncPlotTypeSelect">Plot Type:</label>
+                            <select id="syncPlotTypeSelect" class="select-styled">
+                                <option value="plot_mission_space">Mission Space (2D)</option>
+                                <option value="plot_3d_mission_space">3D Trajectory</option>
+                                <option value="plot_availability">AMV Availability</option>
+                                <option value="plot_energy">Energy Levels</option>
+                                <option value="plot_total_benefit">Consensus Total Benefit</option>
+                                <option value="plot_fault_gantt">Fault Gantt Chart</option>
+                                <option value="plot_comm_graph">Communication Graph</option>
+                                <option value="plot_physics_dashboard">Physics Dashboard</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="side-by-side-plot-grid">
+                        <div class="sync-plot-box">
+                            <h4 id="syncPlotTitleA">Run A: -</h4>
+                            <img id="syncPlotImgA" src="" alt="Run A Plot">
+                        </div>
+                        <div class="sync-plot-box">
+                            <h4 id="syncPlotTitleB">Run B: -</h4>
+                            <img id="syncPlotImgB" src="" alt="Run B Plot">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── View 6: Benchmark & Research Analytics Suite ───────────── -->
+            <section class="view-panel" id="viewBenchmarks" style="display:none;">
+                <div class="view-header-row">
+                    <div>
+                        <h2>Benchmark &amp; Research Analytics Suite</h2>
+                        <p class="section-desc">Statistical evaluation from 300+ sweep experiments comparing Auction, CBBA, and Baseline allocations across failure regimes.</p>
+                    </div>
+
+                    <!-- Dataset Selection -->
+                    <div class="benchmark-dataset-selector">
+                        <label for="benchmarkDatasetSelect">Benchmark Dataset:</label>
+                        <select id="benchmarkDatasetSelect" class="select-styled">
+                            <option value="three_way">Three-Way Allocator Comparison (300 Runs)</option>
+                            <option value="cbba_final">CBBA Final Verified Baseline Sweep</option>
+                            <option value="cbba_postfix">CBBA Postfix Comparison Sweep</option>
+                            <option value="recovery_opt">Recovery Optimization Sweep</option>
+                        </select>
+                        <button class="btn btn-secondary" id="btnExportCsv">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Benchmark Summary KPIs -->
+                <div class="kpi-grid" id="benchmarkKpiGrid">
+                    <!-- Dynamic summary cards -->
+                </div>
+
+                <!-- Benchmark Interactive Charts Grid -->
+                <div class="benchmark-charts-grid">
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Task Completion Rate by Scenario</h3>
+                            <span class="card-subtitle">Auction vs CBBA across stress scenarios</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartBenchmarkCompletion"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Mean Task Delay (Timesteps)</h3>
+                            <span class="card-subtitle">Latency distribution across failure modes</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartBenchmarkDelay"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Congestion Drop Rate</h3>
+                            <span class="card-subtitle">Acoustic packet loss under channel load</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartBenchmarkCongestion"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Never-Completed Task Frequency</h3>
+                            <span class="card-subtitle">Mission dropout count across seeds</span>
+                        </div>
+                        <div class="chart-container-medium">
+                            <canvas id="chartBenchmarkNeverCompleted"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benchmark Raw Data Table -->
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h3>Dataset Raw Records</h3>
+                            <span class="card-subtitle" id="benchmarkTableSubtitle">Showing records</span>
+                        </div>
+                        <div class="table-search-box">
+                            <input type="text" id="benchmarkTableFilter" placeholder="Filter rows...">
+                        </div>
+                    </div>
+                    <div class="table-responsive benchmark-table-wrapper">
+                        <table class="benchmark-table" id="benchmarkDataTable">
+                            <thead id="benchmarkTableHead">
+                                <!-- Dynamic headers -->
+                            </thead>
+                            <tbody id="benchmarkTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── View 7: Swarm Config & Parameter Explorer ──────────────── -->
+            <section class="view-panel" id="viewConfig" style="display:none;">
+                <div class="view-header-row">
+                    <div>
+                        <h2>Simulation Parameters &amp; Architecture Inspector</h2>
+                        <p class="section-desc">Active mathematical models, acoustic channel properties, and fault injection matrices.</p>
+                    </div>
+                </div>
+
+                <div class="config-grid">
+                    <!-- Acoustic Physics & Channel Model -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Acoustic Channel &amp; Physics</h3>
+                        </div>
+                        <div class="config-params-list">
+                            <div class="param-row"><span class="param-name">Acoustic Range (R_comm)</span><span class="param-val">300.0 meters</span></div>
+                            <div class="param-row"><span class="param-name">Thermocline Depth</span><span class="param-val">100.0 meters</span></div>
+                            <div class="param-row"><span class="param-name">Thermocline Loss Penalty</span><span class="param-val">+35.0% Packet Drop</span></div>
+                            <div class="param-row"><span class="param-name">Carrier Frequency</span><span class="param-val">25.0 kHz</span></div>
+                            <div class="param-row"><span class="param-name">Speed of Sound in Water (c)</span><span class="param-val">1500 m/s</span></div>
+                            <div class="param-row"><span class="param-name">Base Packet Loss Model</span><span class="param-val">Thorp Absorption + Shadowing</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Decentralized Consensus & Auction Engine -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Consensus &amp; Task Allocation</h3>
+                        </div>
+                        <div class="config-params-list">
+                            <div class="param-row"><span class="param-name">Allocation Mechanism</span><span class="param-val">Single-Task Auction / CBBA Bundle</span></div>
+                            <div class="param-row"><span class="param-name">Consensus Protocol</span><span class="param-val">EDMC (Event-Driven Max Consensus)</span></div>
+                            <div class="param-row"><span class="param-name">Bid Valuation Metric</span><span class="param-val">Marginal Utility / Energy Penalty</span></div>
+                            <div class="param-row"><span class="param-name">Deadlock Detection Horizon</span><span class="param-val">15 Timesteps Stagnation</span></div>
+                            <div class="param-row"><span class="param-name">Max Auction Iterations</span><span class="param-val">10 per round</span></div>
+                            <div class="param-row"><span class="param-name">Consensus Quorum</span><span class="param-val">&lfloor;2N/3&rfloor; + 1</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Neural Fault Classifier & FSM Parameters -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Neural Classifier &amp; FSM</h3>
+                        </div>
+                        <div class="config-params-list">
+                            <div class="param-row"><span class="param-name">Model Architecture</span><span class="param-val">PyTorch Multi-Layer Perceptron (MLP)</span></div>
+                            <div class="param-row"><span class="param-name">Input Feature Dimension</span><span class="param-val">7 Telemetry Features</span></div>
+                            <div class="param-row"><span class="param-name">Class Outputs</span><span class="param-val">Normal, Load Fault, Sensor Fault, Comms Fault</span></div>
+                            <div class="param-row"><span class="param-name">Classifier Weights</span><span class="param-val">fault_classifier_best.pt</span></div>
+                            <div class="param-row"><span class="param-name">FSM States</span><span class="param-val">Idle, Reaching, Executing, Faulted, Recovery</span></div>
+                            <div class="param-row"><span class="param-name">Recovery Optimization</span><span class="param-val">Dynamic Re-allocation &amp; Fallback Bidding</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Simulation Space Parameters -->
+                    <div class="card panel-card">
+                        <div class="card-header">
+                            <h3>Simulation Domain &amp; Space</h3>
+                        </div>
+                        <div class="config-params-list">
+                            <div class="param-row"><span class="param-name">Operating Bounding Box</span><span class="param-val">1000m &times; 1000m &times; 200m</span></div>
+                            <div class="param-row"><span class="param-name">Default Timesteps</span><span class="param-val">500</span></div>
+                            <div class="param-row"><span class="param-name">Default AMVs</span><span class="param-val">5</span></div>
+                            <div class="param-row"><span class="param-name">Default Tasks</span><span class="param-val">15</span></div>
+                            <div class="param-row"><span class="param-name">Cruise Speed</span><span class="param-val">2.5 m/s</span></div>
+                            <div class="param-row"><span class="param-name">Energy Consumption Rate</span><span class="param-val">0.15% / timestep (cruise)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ── Lightbox for Image Zoom ──────────────────────────────────────── -->
     <div class="lightbox" id="lightbox">
-        <button class="lightbox-close" id="lightboxClose">✕</button>
-        <button class="lightbox-prev" id="lightboxPrev">‹</button>
-        <button class="lightbox-next" id="lightboxNext">›</button>
+        <button class="lightbox-close" id="lightboxClose" title="Close (Esc)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" title="Previous (&larr;)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" title="Next (&rarr;)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
         <div class="lightbox-content">
-            <img id="lightboxImg" src="" alt="Plot">
-            <p class="lightbox-caption" id="lightboxCaption"></p>
+            <img id="lightboxImg" src="" alt="Zoomed Plot">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
         </div>
     </div>
 
+    <!-- Application Script -->
     <script src="app.js"></script>
 </body>
 </html>
