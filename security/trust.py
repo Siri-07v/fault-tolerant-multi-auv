@@ -18,7 +18,7 @@ class TrustScoreTracker:
     def __init__(self, n_amvs):
         pass
 
-    def update_trust_scores(self, amvs, trajectory_log, current_timestep):
+    def update_trust_scores(self, amvs, trajectory_log, current_timestep, trust_release_events=None):
         K = config.TRUST_UPDATE_INTERVAL
         if current_timestep < K:
             return
@@ -78,11 +78,22 @@ class TrustScoreTracker:
                             amv.trust_release_triggered = True
                             if amv.assigned_task is not None:
                                 released_task = amv.assigned_task
+                                released_tid = released_task.task_id
                                 released_task.status = "unassigned"
                                 released_task.assigned_to = None
                                 amv.assigned_task = None
-                                amv.enter_assignment()
-                                print(f"  [TRUST RELEASE] t={current_timestep}: AMV{amv.amv_id} trust dropped below threshold, releasing task {released_task.task_id}")
+                                amv.enter_assignment(reason=f"trust_decay_released_task_{released_tid}", timestep=current_timestep)
+                                print(f"  [TRUST RELEASE] t={current_timestep}: AMV{amv.amv_id} trust dropped below threshold, releasing task {released_tid}")
+                                if trust_release_events is not None:
+                                    trust_release_events.append({
+                                        "timestep": current_timestep,
+                                        "amv_id": amv.amv_id,
+                                        "task_id": released_tid,
+                                        "trust_score": float(amv.trust_score),
+                                        "declared_fault_state": declared,
+                                        "observed_speed": float(observed_speed),
+                                    })
             else:
                 # Reset consecutive violations on a clean window
                 amv.consecutive_trust_violations = 0
+

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUV Swarm Telemetry & Mission Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131c2e;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --clean: #10b981;
+      --degraded: #f59e0b;
+      --unknown: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--clean);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #0b0f19;
+      border: none;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    nav.tabs {
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .view-container {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .view-container.active {
+      display: flex;
+    }
+
+    /* Grid Layout */
+    .grid-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-body {
+      padding: 0.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #070b12;
+      min-height: 380px;
+    }
+
+    .card-body img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card-body img:hover {
+      transform: scale(1.01);
+      cursor: zoom-in;
+    }
+
+    /* Fullscreen view */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-card .card-body {
+      min-height: 80vh;
+      padding: 1rem;
+    }
+
+    .hero-card .card-body img {
+      max-height: 85vh;
+      width: auto;
+    }
+
+    /* Modal for zoom */
+    #imageModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+    }
+
+    #imageModal img {
+      max-width: 95vw;
+      max-height: 95vh;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+    }
+
+    footer {
+      padding: 0.75rem 2rem;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>🌊 Fault-Tolerant Multi-AUV Mission Dashboard</h1>
+      <p>Decentralized Auction Consensus &bull; Symbolic Veto Engine &bull; Open-Set Mahalanobis Fault Gating</p>
+    </div>
+    <div class="header-actions">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span>Live Telemetry</span>
+      </div>
+      <button class="btn" onclick="refreshImages()">🔄 Reload Plots</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('all')">Grid View</button>
+    <button class="tab-btn" onclick="switchTab('telemetry')">Telemetry Dashboard</button>
+    <button class="tab-btn" onclick="switchTab('mapping')">Task Mapping</button>
+    <button class="tab-btn" onclick="switchTab('fsm')">FSM Timeline</button>
+    <button class="tab-btn" onclick="switchTab('openset')">Open-Set Detection</button>
+    <button class="tab-btn" onclick="switchTab('physics')">Physics & Ocean</button>
+    <button class="tab-btn" onclick="switchTab('mesh')">3D Mesh Animation</button>
+  </nav>
+
+  <main>
+    <!-- View 1: Grid View -->
+    <div id="view-all" class="view-container active">
+      <div class="grid-dashboard">
+        
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Swarm Telemetry & Verification Dashboard</span>
+            <span class="badge">Plot 17</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="plot_telemetry_dashboard.png" alt="Telemetry Dashboard" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Task-to-AMV Completion Mapping & Quality</span>
+            <span class="badge">Plot 14</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="plot_task_completion_mapping.png" alt="Task Mapping" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">FSM State Progression & UNKNOWN_FAULT Gating</span>
+            <span class="badge">Plot 12</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="plot_fsm_timeline.png" alt="FSM Timeline" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Open-Set Mahalanobis Distance Distributions & ROC</span>
+            <span class="badge">Open-Set</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="plot_openset_distributions.png" alt="Open-Set Distributions" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Ocean Environment & Acoustic Physics Dashboard</span>
+            <span class="badge">Plot 10</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="plot_physics_dashboard.png" alt="Physics Dashboard" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Acoustic Communication Mesh Dynamics</span>
+            <span class="badge">Plot 11</span>
+          </div>
+          <div class="card-body">
+            <img class="dash-img" src="mesh_animation.gif" alt="Mesh Animation" onclick="openModal(this.src)">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- View 2: Focused Telemetry -->
+    <div id="view-telemetry" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">Swarm Telemetry & Verification Dashboard (4-Panel Comprehensive)</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="plot_telemetry_dashboard.png" alt="Telemetry Dashboard" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- View 3: Focused Task Mapping -->
+    <div id="view-mapping" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">Task-to-AMV Completion Mapping with Clean/Degraded Quality</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="plot_task_completion_mapping.png" alt="Task Mapping" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- View 4: Focused FSM Timeline -->
+    <div id="view-fsm" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">FSM Gantt Timeline (State Evolution, Reallocations, and UNKNOWN_FAULT Hatches)</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="plot_fsm_timeline.png" alt="FSM Timeline" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- View 5: Focused Open-Set Detection -->
+    <div id="view-openset" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">Open-Set Mahalanobis Distance Calibration & Synthetic Fault ROC</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="plot_openset_distributions.png" alt="Open-Set Distributions" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- View 6: Focused Physics -->
+    <div id="view-physics" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">Physics Dashboard (Thermocline, Ocean Currents, Acoustic Attenuation)</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="plot_physics_dashboard.png" alt="Physics Dashboard" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- View 7: Focused Mesh Animation -->
+    <div id="view-mesh" class="view-container">
+      <div class="hero-card">
+        <div class="card-header">
+          <span class="card-title">Dynamic Communication Mesh Animation</span>
+          <span class="badge">Full Screen</span>
+        </div>
+        <div class="card-body">
+          <img class="dash-img" src="mesh_animation.gif" alt="Mesh Animation" onclick="openModal(this.src)">
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="imageModal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="Enlarged View">
+  </div>
+
+  <footer>
+    <span>Capstone Mission Ground Station &bull; Multi-AUV Cooperative Control</span>
+    <span>Auto-refresh interval: 10s &bull; Click any plot to zoom</span>
+  </footer>
+
+  <script>
+    function switchTab(viewId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active'));
+
+      event.target.classList.add('active');
+      const targetView = document.getElementById('view-' + viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+    }
+
+    function refreshImages() {
+      const timestamp = new Date().getTime();
+      document.querySelectorAll('.dash-img').forEach(img => {
+        const baseSrc = img.src.split('?')[0];
+        img.src = baseSrc + '?t=' + timestamp;
+      });
+    }
+
+    function openModal(src) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Auto-refresh every 10 seconds to catch simulation updates
+    setInterval(refreshImages, 10000);
+  </script>
+</body>
+</html>
