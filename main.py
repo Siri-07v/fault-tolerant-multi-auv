@@ -4,6 +4,8 @@ Run train.py first to produce fault_classifier_best.pt and scaler.pkl.
 """
 import os
 import sys
+import warnings
+warnings.filterwarnings("ignore")
 # Reconfigure stdout/stderr to UTF-8 to prevent charmap encoding crashes on Windows
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
@@ -96,7 +98,7 @@ def main():
         sys.exit(1)
 
     classifier = FaultClassifier().to(device)
-    classifier.load_state_dict(torch.load(config.MODEL_PATH, map_location=device))
+    classifier.load_state_dict(torch.load(config.MODEL_PATH, map_location=device, weights_only=True))
     classifier.eval()
 
     with open(config.SCALER_PATH, "rb") as f:

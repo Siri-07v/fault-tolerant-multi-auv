@@ -1,6 +1,9 @@
 """
 visualize.py — 12 plots for the Miele et al. upgraded AUV swarm simulation.
 """
+import warnings
+warnings.filterwarnings("ignore")
+
 import numpy as np
 import matplotlib
 if not getattr(__import__('config'), 'LIVE_VIZ_ENABLED', False):
@@ -1589,7 +1592,6 @@ def plot_task_completion_mapping(task_completion_log, tasks=None,
 
     ax_table.set_title("Task Completion Attribution Summary Table", fontsize=12, fontweight='bold', pad=10)
 
-    fig.tight_layout()
     out_path = _get_save_path(filename)
     fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
