@@ -37,10 +37,16 @@ class FaultClassifier(nn.Module):
             nn.Linear(64, num_classes),
         )
 
-    def forward(self, x):
-        """x: (batch, 7, 50) → logits (batch, 5)"""
+    def extract_features(self, x):
+        """Extract 128-dim global-average-pooled feature vector."""
         x = self.conv_block1(x)      # (B, 64, 50)
         x = self.conv_block2(x)      # (B, 128, 50)
-        x = x.mean(dim=2)            # Global Average Pooling → (B, 128)
-        x = self.fc(x)               # (B, 5)
-        return x
+        return x.mean(dim=2)         # Global Average Pooling → (B, 128)
+
+    def forward(self, x, return_features=False):
+        """x: (batch, 7, 50) → logits (batch, 5) [or (logits, features) if return_features=True]"""
+        features = self.extract_features(x)
+        logits = self.fc(features)
+        if return_features:
+            return logits, features
+        return logits

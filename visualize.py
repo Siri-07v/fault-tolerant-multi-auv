@@ -13,7 +13,17 @@ import matplotlib.ticker
 import networkx as nx
 from mpl_toolkits.mplot3d import Axes3D
 
+import os
+
 import config
+
+LATEST_RUNS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "latest_runs")
+
+def _get_save_path(filename):
+    os.makedirs(LATEST_RUNS_DIR, exist_ok=True)
+    if os.path.isabs(filename):
+        return filename
+    return os.path.join(LATEST_RUNS_DIR, os.path.basename(filename))
 
 # ─── Global style ────────────────────────────────────────────────────────────────
 plt.style.use('seaborn-v0_8-whitegrid')
@@ -184,10 +194,10 @@ def plot_mission_space(amvs, tasks, initial_positions, reallocation_log,
     ax.set_xlabel('X Position (m)'); ax.set_ylabel('Y Position (m)')
     ax.set_aspect("equal"); ax.grid(True, alpha=0.3)
 
-    fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 2: Task Coverage Rate ─────────────────────────────────────────────────
@@ -240,9 +250,10 @@ def plot_task_coverage(log_df, reallocation_log, deadlock_log, completion_log,
     ax.yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1.0))
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 3: Per-AMV Availability ────────────────────────────────────────────────
@@ -293,9 +304,10 @@ def plot_availability(availability_log, fault_log, filename="plot_availability.p
     ax.set_ylim(0, 1.05)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 4: Fault State Gantt Chart ────────────────────────────────────────────
@@ -343,9 +355,10 @@ def plot_fault_gantt(fault_log, filename="plot_fault_gantt.png"):
     ax.legend(handles=patches, loc='upper left', bbox_to_anchor=(1.01, 1),
               borderaxespad=0, fontsize=8)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 5: Communication Graph Snapshots ──────────────────────────────────────
@@ -423,9 +436,10 @@ def plot_comm_graph_snapshots(graph_snapshots, energy_snapshots=None,
         ax.grid(True, alpha=0.2)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 6: Energy Depletion ───────────────────────────────────────────────────
@@ -484,9 +498,10 @@ def plot_energy(energy_log, reallocation_log_by_amv, fsm_deadlock_events=None,
     ax.legend(loc="best", fontsize=8)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 7: Total Benefit Evolution ────────────────────────────────────────────
@@ -538,9 +553,10 @@ def plot_total_benefit(benefit_snapshot_log, deadlock_log, completion_log,
     ax.set_title("Evolution of Total Benefit Over Time")
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 8: Per-AMV Proposal and EDMC Consensus ───────────────────────────────
@@ -636,9 +652,10 @@ def plot_edmc_proposals(proposal_log, mt_log, deadlock_log, completion_log,
     ax_bot.grid(True, alpha=0.3)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150)
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 9: 3D Space-Time Trajectory View ──────────────────────────────────────
@@ -709,9 +726,10 @@ def plot_3d_mission_space(trajectory_log, task_positions, completed_tasks,
     ax2.set_facecolor('#f0f4f8')
 
     plt.tight_layout()
-    plt.savefig('plot_3d_mission_space.png', bbox_inches='tight', dpi=150)
+    out_path = _get_save_path('plot_3d_mission_space.png')
+    plt.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close()
-    print("Saved plot_3d_mission_space.png")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 10: Physics Dashboard ──────────────────────────────────────────────────
@@ -816,9 +834,10 @@ def plot_physics_dashboard(physics_log, fault_log=None):
         ax.grid(True, alpha=0.3)
 
     plt.tight_layout(rect=[0, 0, 1, 0.94])
-    plt.savefig('plot_physics_dashboard.png', bbox_inches='tight', dpi=150)
+    out_path = _get_save_path('plot_physics_dashboard.png')
+    plt.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close()
-    print("Saved plot_physics_dashboard.png")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 11: Acoustic Communication Mesh Animation ─────────────────────────────
@@ -921,17 +940,25 @@ def plot_mesh_animation(mesh_snapshots, filename='mesh_animation.gif'):
     print(f"Saved {filename}  ({len(mesh_snapshots)} frames)")
 
 
-# ─── Plot 12: Per-AMV FSM State Timeline ─────────────────────────────────────────
+# ─── Plot 12: Per-AMV FSM State & Fault State Timeline ───────────────────────────
 
 def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
-                      filename='plot_fsm_timeline.png'):
+                      fault_log=None, fault_events=None, fault_injection_events=None,
+                      fsm_transitions=None, unknown_fault_log=None,
+                      filename='plot_fsm_timeline.png', **kwargs):
     """
-    Colour-coded horizontal timeline of each AMV's FSM state over time.
+    Colour-coded horizontal timeline of each AMV's FSM state with overlaid fault states,
+    open-set UNKNOWN_FAULT indicators, and annotated fault injection events over time.
 
     fsm_state_log: {amv_id: [(timestep, fsm_state), ...]}
     deadlock_log:  [{timestep, ...}, ...]
     completion_log: [{timestep, task_id, ...}, ...]
+    fault_log:     {amv_id: [(timestep, fault_state), ...]} (optional)
+    fault_events:  [{timestep, amv_id, fault_state, ...}, ...] (optional)
     """
+    if fault_events is None and fault_injection_events is not None:
+        fault_events = fault_injection_events
+
     FSM_COLORS = {
         config.FSM_HOMING:     '#90A4AE',
         config.FSM_ASSIGNMENT: '#FFF176',
@@ -947,13 +974,15 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
         print("No FSM state data — skipping plot_fsm_timeline.png")
         return
 
-    fig, ax = plt.subplots(figsize=(18, 6))
+    fig, ax = plt.subplots(figsize=(18, 7.5))
     fig.subplots_adjust(right=0.72)
+
+    has_fault_overlay = fault_log is not None and len(fault_log) > 0
 
     # ── Alternating row shading ──────────────────────────────────────────
     for row_idx in range(len(amv_ids)):
         if row_idx % 2 == 0:
-            ax.axhspan(row_idx - 0.4, row_idx + 0.4, color='#f5f5f5', zorder=0)
+            ax.axhspan(row_idx - 0.45, row_idx + 0.45, color='#f5f5f5', zorder=0)
 
     # ── Draw coloured segments per AMV ───────────────────────────────────
     for row_idx, amv_id in enumerate(amv_ids):
@@ -961,7 +990,7 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
         if not records:
             continue
 
-        # Build contiguous segments
+        # Build contiguous FSM segments
         segments = []
         cur_state = records[0][1]
         seg_start = records[0][0]
@@ -972,10 +1001,44 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
                 seg_start = ts
         segments.append((seg_start, records[-1][0] + 1, cur_state))
 
+        fsm_y = row_idx + 0.12 if has_fault_overlay else row_idx
+        fsm_h = 0.32 if has_fault_overlay else 0.55
+
         for start, end, state in segments:
             color = FSM_COLORS.get(state, '#95a5a6')
-            ax.barh(row_idx, end - start, left=start, height=0.55,
-                    color=color, edgecolor='white', linewidth=0.5)
+            ax.barh(fsm_y, end - start, left=start, height=fsm_h,
+                    color=color, edgecolor='white', linewidth=0.5, zorder=2)
+
+        # ── Overlay Fault State if available ──────────────────────────────
+        if has_fault_overlay and amv_id in fault_log:
+            f_records = fault_log[amv_id]
+            if f_records:
+                f_segments = []
+                cur_f = f_records[0][1]
+                seg_f_start = f_records[0][0]
+                for f_ts, f_state in f_records[1:]:
+                    if f_state != cur_f:
+                        f_segments.append((seg_f_start, f_ts, cur_f))
+                        cur_f = f_state
+                        seg_f_start = f_ts
+                f_segments.append((seg_f_start, f_records[-1][0] + 1, cur_f))
+
+                fault_y = row_idx - 0.18
+                fault_h = 0.22
+                for start, end, state in f_segments:
+                    f_color = FAULT_COLORS.get(state, '#95a5a6')
+                    ax.barh(fault_y, end - start, left=start, height=fault_h,
+                            color=f_color, edgecolor='white', linewidth=0.5, zorder=2)
+
+        # ── Overlay UNKNOWN_FAULT if flagged ─────────────────────────────
+        if unknown_fault_log:
+            u_events = [e for e in unknown_fault_log if (isinstance(e, dict) and e.get('amv_id') == amv_id) or (isinstance(e, (tuple, list)) and e[1] == amv_id)]
+            for u in u_events:
+                u_ts = u['timestep'] if isinstance(u, dict) else u[0]
+                target_y = row_idx - 0.18 if has_fault_overlay else row_idx
+                target_h = 0.22 if has_fault_overlay else 0.55
+                ax.barh(target_y, 10, left=u_ts, height=target_h,
+                        color='none', edgecolor='#D50000', hatch='///', linewidth=1.5, zorder=5)
 
         # ── Summary annotation: percentage per state ─────────────────────
         total = len(records)
@@ -993,13 +1056,13 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
         summary = ' | '.join(parts)
         # Place summary to the right of the row
         ax.text(records[-1][0] + 5, row_idx, summary,
-                fontsize=6, va='center', color='#333333')
+                fontsize=7, va='center', color='#333333', fontweight='bold')
 
     # ── Deadlock events — red dashed vlines ──────────────────────────────
     dl_label = True
     for evt in deadlock_log:
         ax.axvline(x=evt['timestep'], color='#E53935', linestyle='--',
-                   linewidth=1.2, alpha=0.7,
+                   linewidth=1.2, alpha=0.7, zorder=3,
                    label='Deadlock Event' if dl_label else None)
         dl_label = False
 
@@ -1007,35 +1070,77 @@ def plot_fsm_timeline(fsm_state_log, deadlock_log, completion_log,
     cl_label = True
     for evt in completion_log:
         ax.axvline(x=evt['timestep'], color='#43A047', linestyle='--',
-                   linewidth=1.2, alpha=0.5,
+                   linewidth=1.2, alpha=0.5, zorder=3,
                    label='Task Completion' if cl_label else None)
         cl_label = False
 
+    # ── Fault injection events — purple dash-dot vlines and annotations ────
+    if fault_events:
+        fe_label = True
+        for fe in fault_events:
+            fe_ts = fe.get('timestep', 0)
+            fe_aid = fe.get('amv_id', -1)
+            fe_type = fe.get('type', fe.get('fault_state', 'fault'))
+            ax.axvline(x=fe_ts, color='#8E24AA', linestyle='-.',
+                       linewidth=1.8, alpha=0.85, zorder=4,
+                       label='Fault Injection Event' if fe_label else None)
+            fe_label = False
+            ax.scatter(fe_ts, fe_aid if fe_aid in amv_ids else 0,
+                       marker='D', color='#8E24AA', s=80, edgecolors='black',
+                       linewidths=1.0, zorder=6)
+            ax.text(fe_ts + 2, fe_aid + 0.28, f"Fault: AMV{fe_aid} ({fe_type})",
+                    fontsize=7, fontweight='bold', color='#6A1B9A', rotation=25,
+                    bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='#8E24AA', alpha=0.85))
+
     # ── Axis & legend ────────────────────────────────────────────────────
     ax.set_yticks(range(len(amv_ids)))
-    ax.set_yticklabels([f'AMV {i}' for i in amv_ids])
-    ax.set_xlabel('Timestep')
-    ax.set_ylabel('AMV')
-    ax.set_title('Per-AMV FSM State Timeline', fontsize=14, fontweight='bold')
+    if has_fault_overlay:
+        ax.set_yticklabels([f'AMV {i}\n[FSM / Fault]' for i in amv_ids], fontsize=9, fontweight='bold')
+    else:
+        ax.set_yticklabels([f'AMV {i}' for i in amv_ids], fontsize=9, fontweight='bold')
+    ax.set_xlabel('Timestep', fontsize=11, fontweight='bold')
+    ax.set_ylabel('AMV', fontsize=11, fontweight='bold')
+    title_suffix = " (with Overlaid Fault State & Fault Injections)" if has_fault_overlay else ""
+    ax.set_title(f'Per-AMV FSM State Timeline{title_suffix}', fontsize=14, fontweight='bold')
     ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(50))
     ax.grid(axis='x', alpha=0.4)
 
     # Colour legend — FSM states
-    state_patches = [mpatches.Patch(color=FSM_COLORS[s], label=s)
+    state_patches = [mpatches.Patch(color=FSM_COLORS[s], label=f"FSM: {s}")
                      for s in FSM_COLORS]
-    # Also add event markers to legend
+    
+    fault_patches = []
+    if has_fault_overlay:
+        fault_patches = [mpatches.Patch(color=FAULT_COLORS[s], label=f"Fault: {s}")
+                         for s in FAULT_COLORS]
+
+    # Event markers to legend
     event_handles = [
         mlines.Line2D([], [], color='#E53935', linestyle='--', label='Deadlock Event'),
         mlines.Line2D([], [], color='#43A047', linestyle='--', label='Task Completion'),
     ]
-    ax.legend(handles=state_patches + event_handles,
+    if fault_events:
+        event_handles.append(
+            mlines.Line2D([], [], color='#8E24AA', linestyle='-.', marker='D',
+                          markersize=6, label='Fault Injection Event')
+        )
+    if unknown_fault_log:
+        event_handles.append(
+            mpatches.Patch(facecolor='none', edgecolor='#D50000', hatch='///', linewidth=1.5,
+                           label='Open-Set: UNKNOWN_FAULT')
+        )
+
+    all_handles = state_patches + fault_patches + event_handles
+    ax.legend(handles=all_handles,
               loc='upper left', bbox_to_anchor=(1.01, 1),
-              borderaxespad=0, fontsize=8)
+              borderaxespad=0, fontsize=7.5, framealpha=0.95)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
+
 
 
 # ─── Plot 13: FSM Transition Diagram (Static) ───────────────────────────────────
@@ -1114,9 +1219,10 @@ def plot_fsm_diagram(filename='plot_fsm_diagram.png'):
 
     ax.axis('off')
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
 
 
 # ─── Plot 14: CNN Classification Confidence Distribution ─────────────────────
@@ -1181,7 +1287,636 @@ def plot_confidence_histogram(confidence_log, filename='plot_confidence_histogra
     ax_right.grid(True, alpha=0.3)
 
     fig.tight_layout()
-    fig.savefig(filename, dpi=150, bbox_inches='tight')
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)
-    print(f"Saved {filename}")
+    print(f"Saved {out_path}")
+
+
+def plot_allocator_comparison_completion(results_df, filename='plot_allocator_comparison_completion.png'):
+    """
+    Plots Task Completion Rate over time for Auction vs CBBA across the 4 scenarios.
+    """
+    scenarios = ['none', 'amv_loss', 'comm_blackout', 'mass_fault']
+    scenario_titles = {
+        'none': 'Nominal (No Stress)',
+        'amv_loss': 'AMV Loss Stress Scenario',
+        'comm_blackout': 'Comm Blackout Stress Scenario',
+        'mass_fault': 'Mass Fault Stress Scenario'
+    }
+
+    fig, axes = plt.subplots(2, 2, figsize=(15, 11), sharex=True, sharey=True)
+    axes = axes.flatten()
+
+    for idx, sc in enumerate(scenarios):
+        ax = axes[idx]
+        ax.set_facecolor('#fafafa')
+        
+        # Filter scenario data
+        sc_data = results_df[results_df['scenario'] == sc]
+        
+        for alloc, color, label in [('auction', '#1565C0', 'Auction + EDMC (Proposed)'),
+                                    ('cbba', '#E65100', 'CBBA (Baseline)')]:
+            alloc_data = sc_data[sc_data['allocator'] == alloc]
+            if alloc_data.empty:
+                continue
+            
+            # Group by timestep and calculate mean/std
+            grouped = alloc_data.groupby('timestep')['tasks_completed'].agg(['mean', 'std']).reset_index()
+            t_vals = grouped['timestep']
+            mean_rate = grouped['mean'] / config.N_TASKS
+            std_rate = grouped['std'].fillna(0) / config.N_TASKS
+            
+            ax.plot(t_vals, mean_rate, color=color, linewidth=2.5, label=label)
+            ax.fill_between(t_vals, np.clip(mean_rate - std_rate, 0, 1), np.clip(mean_rate + std_rate, 0, 1),
+                            color=color, alpha=0.15)
+            
+        ax.set_title(scenario_titles[sc], fontsize=12, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        ax.set_ylim(-0.05, 1.05)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+        
+        # Stress line at t=150
+        if sc != 'none':
+            ax.axvline(x=150, color='#7f8c8d', linestyle=':', linewidth=1.5, zorder=1)
+            ax.text(152, 0.5, 'Stress Injected', color='#7f8c8d', rotation=90, fontsize=8, va='center')
+
+        if idx in [2, 3]:
+            ax.set_xlabel('Timestep', fontweight='bold')
+        if idx in [0, 2]:
+            ax.set_ylabel('Task Completion Rate', fontweight='bold')
+
+    # Add single legend
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=2, fontsize=10)
+    fig.suptitle('Task Completion Rate Over Time: Auction vs CBBA', fontsize=16, fontweight='bold', y=1.02)
+    fig.tight_layout()
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
+def plot_allocator_comparison_deadlock_recovery(results_df, filename='plot_allocator_comparison_deadlock_recovery.png'):
+    """
+    Plots recovery timeline showing CBBA stalling vs Auction resolving via EDMC.
+    """
+    stress_scenarios = ['amv_loss', 'mass_fault']
+    scenario_titles = {
+        'amv_loss': 'AMV Loss (2 Vehicles Lost at t=150)',
+        'mass_fault': 'Mass Fault (3 Vehicles Degraded at t=150)'
+    }
+
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.5))
+    twin_ax_legend = None
+    
+    for idx, sc in enumerate(stress_scenarios):
+        ax1 = axes[idx]
+        ax1.set_facecolor('#fafafa')
+        
+        # Filter scenario data
+        sc_data = results_df[results_df['scenario'] == sc]
+        
+        # Plot Task Completion Rate on left axis
+        ax1.set_xlabel('Timestep', fontweight='bold')
+        ax1.set_ylabel('Task Completion Rate (Solid Line)', color='#333333', fontweight='bold')
+        ax1.tick_params(axis='y', labelcolor='#333333')
+        
+        # Secondary axis for stalled AMVs
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('Active Stalled AMVs (Dashed Line)', color='#7f8c8d', fontweight='bold')
+        ax2.tick_params(axis='y', labelcolor='#7f8c8d')
+        ax2.set_ylim(-0.2, config.N_AMVS + 0.2)
+        if idx == 0:
+            twin_ax_legend = ax2
+        
+        # Plot Auction
+        auc_data = sc_data[sc_data['allocator'] == 'auction']
+        if not auc_data.empty:
+            auc_grouped = auc_data.groupby('timestep')[['tasks_completed', 'stalled_amvs']].mean().reset_index()
+            ax1.plot(auc_grouped['timestep'], auc_grouped['tasks_completed'] / config.N_TASKS,
+                     color='#1565C0', linewidth=2.5, label='Auction Completion')
+            ax2.plot(auc_grouped['timestep'], auc_grouped['stalled_amvs'],
+                     color='#2196F3', linewidth=1.5, linestyle='--', label='Auction Stalled')
+            
+        # Plot CBBA
+        cbba_data = sc_data[sc_data['allocator'] == 'cbba']
+        if not cbba_data.empty:
+            cbba_grouped = cbba_data.groupby('timestep')[['tasks_completed', 'stalled_amvs']].mean().reset_index()
+            ax1.plot(cbba_grouped['timestep'], cbba_grouped['tasks_completed'] / config.N_TASKS,
+                     color='#E65100', linewidth=2.5, label='CBBA Completion')
+            ax2.plot(cbba_grouped['timestep'], cbba_grouped['stalled_amvs'],
+                     color='#FF9800', linewidth=1.5, linestyle='--', label='CBBA Stalled')
+
+        ax1.grid(True, alpha=0.3)
+        ax1.set_ylim(-0.05, 1.05)
+        ax1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+        
+        # Stress line at t=150
+        ax1.axvline(x=150, color='red', linestyle=':', linewidth=1.5, zorder=1)
+        ax1.text(152, 0.05, 'Stress Injected', color='red', fontsize=8, fontweight='bold')
+        
+        ax1.set_title(scenario_titles[sc], fontsize=12, fontweight='bold')
+
+    # Collect legend handles
+    handles = []
+    labels = []
+    for ax in [axes[0], twin_ax_legend]:
+        if ax is not None:
+            h, l = ax.get_legend_handles_labels()
+            handles.extend(h)
+            labels.extend(l)
+            
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=4, fontsize=10)
+    
+    fig.suptitle('Allocator Deadlock Recovery & Stalling Under Stress Scenarios', fontsize=16, fontweight='bold', y=1.02)
+    fig.tight_layout()
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
+# ─── Plot 15: Task-to-AMV Completion Mapping & Table ─────────────────────────────
+
+def plot_task_completion_mapping(task_completion_log, tasks=None,
+                                 n_amvs=None, filename='plot_task_completion_mapping.png', **kwargs):
+    """
+    Color-coded timeline + structured attribution table showing Task ID -> Completing AMV -> Completion Timestep.
+
+    task_completion_log: [{timestep, task_id, amv_id}, ...]
+    tasks: list of Task objects
+    """
+    # Handle swapped or named parameters
+    if tasks is None:
+        if isinstance(task_completion_log, list) and len(task_completion_log) > 0 and hasattr(task_completion_log[0], 'task_id'):
+            tasks = task_completion_log
+            task_completion_log = kwargs.get('task_completion_log', [])
+    elif isinstance(task_completion_log, list) and len(task_completion_log) > 0 and hasattr(task_completion_log[0], 'task_id'):
+        # Swapped: first arg is tasks list, second is completion log
+        tasks, task_completion_log = task_completion_log, tasks
+
+    real_tasks = [t for t in (tasks or []) if not getattr(t, 'is_dummy', False)]
+    if not real_tasks:
+        print("No tasks to plot for task completion mapping.")
+        return
+
+    # Map task completions: {task_id: {'amv_id': aid, 'timestep': t}}
+    completion_map = {}
+    for entry in (task_completion_log or []):
+        tid = entry['task_id']
+        completion_map[tid] = {
+            'amv_id': entry['amv_id'],
+            'timestep': entry['timestep']
+        }
+
+    # If task is marked completed on task object but not in log (fallback)
+    for t in real_tasks:
+        if t.status == 'completed' and t.task_id not in completion_map:
+            completion_map[t.task_id] = {
+                'amv_id': t.assigned_to,
+                'timestep': getattr(t, 'completion_timestep', config.SIMULATION_TIMESTEPS)
+            }
+
+    sorted_tasks = sorted(real_tasks, key=lambda x: x.task_id)
+    n_tasks = len(sorted_tasks)
+
+    fig = plt.figure(figsize=(16, 10))
+    gs = fig.add_gridspec(2, 1, height_ratios=[1.8, 1.2], hspace=0.35)
+    ax_chart = fig.add_subplot(gs[0])
+    ax_table = fig.add_subplot(gs[1])
+
+    ax_chart.set_facecolor('#fafafa')
+
+    # Alternating row background shading
+    for idx in range(n_tasks):
+        if idx % 2 == 0:
+            ax_chart.axhspan(idx - 0.4, idx + 0.4, color='#f0f4f8', zorder=0)
+
+    max_t = config.SIMULATION_TIMESTEPS
+    for t_entry in completion_map.values():
+        if t_entry['timestep'] is not None and t_entry['timestep'] > max_t:
+            max_t = t_entry['timestep']
+
+    # Draw horizontal bars per task
+    for idx, t in enumerate(sorted_tasks):
+        tid = t.task_id
+        if tid in completion_map and t.status == 'completed':
+            c_info = completion_map[tid]
+            aid = c_info['amv_id']
+            t_comp = c_info['timestep']
+            c_color = AMV_COLORS[aid % len(AMV_COLORS)] if aid is not None else '#4CAF50'
+
+            # Bar from 0 to completion timestep
+            ax_chart.barh(idx, t_comp, left=0, height=0.55, color=c_color,
+                          alpha=0.85, edgecolor='white', linewidth=1.0, zorder=2)
+
+            # Marker at completion timestep
+            ax_chart.scatter(t_comp, idx, marker='*', s=180, color='#FFD700',
+                             edgecolors='black', linewidths=1.0, zorder=4)
+
+            # Label on the right of bar
+            label_str = f"Completed at t={t_comp} by AMV{aid}" if aid is not None else f"Completed at t={t_comp}"
+            ax_chart.text(t_comp + 4, idx, label_str,
+                          fontsize=8, fontweight='bold', va='center', color='#1A237E', zorder=3)
+        else:
+            # Uncompleted task: gray / red bar
+            ax_chart.barh(idx, max_t * 0.15, left=0, height=0.55, color='#E0E0E0',
+                          alpha=0.6, edgecolor='#BDBDBD', linewidth=1.0, zorder=2)
+            ax_chart.text(max_t * 0.15 + 4, idx, "Uncompleted / Unassigned",
+                          fontsize=8, fontstyle='italic', va='center', color='#D32F2F', zorder=3)
+
+    ax_chart.set_yticks(range(n_tasks))
+    ax_chart.set_yticklabels([f"Task {t.task_id} (prio={t.priority_weight:.2f})" for t in sorted_tasks],
+                             fontsize=8.5, fontweight='bold')
+    ax_chart.set_xlabel("Simulation Timestep", fontsize=11, fontweight='bold')
+    ax_chart.set_ylabel("Task ID", fontsize=11, fontweight='bold')
+    ax_chart.set_title("Task-to-AMV Completion Attribution Timeline", fontsize=13, fontweight='bold')
+    ax_chart.set_xlim(0, max(max_t + 100, 100))
+    ax_chart.grid(axis='x', alpha=0.4)
+
+    # Legend for AMVs
+    amv_handles = [
+        mpatches.Patch(color=AMV_COLORS[i % len(AMV_COLORS)], label=f"AMV {i}")
+        for i in range(config.N_AMVS)
+    ]
+    amv_handles.append(mlines.Line2D([], [], marker='*', color='w', markerfacecolor='#FFD700',
+                                     markeredgecolor='black', markersize=10, label="Task Completion Point"))
+    ax_chart.legend(handles=amv_handles, loc="upper right", fontsize=8, framealpha=0.9)
+
+    # ── Table Subplot ────────────────────────────────────────────────────────
+    ax_table.axis('off')
+    table_data = []
+    cell_colors = []
+    
+    table_headers = ["Task ID", "Priority", "Status", "Quality", "Completing AMV", "Completion Timestep"]
+    
+    for t in sorted_tasks:
+        tid = t.task_id
+        is_comp = (t.status == 'completed')
+        c_info = completion_map.get(tid, {})
+        aid = c_info.get('amv_id', t.assigned_to)
+        t_comp = c_info.get('timestep', '—') if is_comp else '—'
+        
+        status_str = "COMPLETED" if is_comp else t.status.upper()
+        quality_str = getattr(t, 'completion_quality', '—') if is_comp else '—'
+        if not quality_str:
+            quality_str = '—'
+        amv_str = f"AMV {aid}" if (is_comp and aid is not None) else "—"
+        
+        row = [f"Task {tid}", f"{t.priority_weight:.2f}", status_str, quality_str, amv_str, str(t_comp)]
+        table_data.append(row)
+        
+        # Color row cells
+        if is_comp:
+            q_col = '#C8E6C9' if quality_str == 'completed_clean' else '#FFE0B2'
+            row_col = ['#E8F5E9', '#E8F5E9', '#C8E6C9', q_col, '#E3F2FD', '#E8F5E9']
+        else:
+            row_col = ['#FFEBEE', '#FFEBEE', '#FFCDD2', '#F5F5F5', '#F5F5F5', '#F5F5F5']
+        cell_colors.append(row_col)
+
+    table = ax_table.table(cellText=table_data, colLabels=table_headers,
+                           cellColours=cell_colors, loc='center', cellLoc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(8.5)
+    table.scale(1.0, 1.25)
+
+    # Style header row
+    for col_idx in range(len(table_headers)):
+        cell = table[(0, col_idx)]
+        cell.set_facecolor('#1A237E')
+        cell.set_text_props(color='white', fontweight='bold')
+
+    ax_table.set_title("Task Completion Attribution Summary Table", fontsize=12, fontweight='bold', pad=10)
+
+    fig.tight_layout()
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
+# ─── Plot 16: Per-AMV Trust Score Timeline ───────────────────────────────────────
+
+def plot_trust_timeline(trust_log, trust_release_events=None,
+                        filename='plot_trust_timeline.png'):
+    """
+    Per-AMV TrustScore line chart over time with release threshold (0.4) marked
+    and task-release events annotated on the timeline.
+
+    trust_log: {amv_id: [(timestep, trust_score, declared_fault_state, observed_speed), ...]}
+    trust_release_events: list of dicts: [{timestep, amv_id, task_id, trust_score, ...}, ...]
+    """
+    if not trust_log:
+        print("No trust log data — skipping plot_trust_timeline.png")
+        return
+
+    fig, (ax_trust, ax_speed) = plt.subplots(2, 1, figsize=(15, 8.5), sharex=True,
+                                             gridspec_kw={'height_ratios': [1.8, 1.2]})
+    fig.subplots_adjust(hspace=0.15)
+
+    amv_ids = sorted(trust_log.keys())
+
+    # ── TOP: Trust Score Timeline ──────────────────────────────────────────
+    ax_trust.set_facecolor('#fafafa')
+
+    # Shaded Untrusted Zone below 0.4
+    ax_trust.axhspan(-0.05, config.TRUST_THRESHOLD, color='#FFEBEE', alpha=0.7, zorder=0)
+    ax_trust.axhline(y=config.TRUST_THRESHOLD, color='#D32F2F', linestyle='--', linewidth=2.0,
+                     label=f'Trust Release Threshold ({config.TRUST_THRESHOLD})', zorder=3)
+    ax_trust.text(5, config.TRUST_THRESHOLD + 0.03, f"Release Threshold ({config.TRUST_THRESHOLD})",
+                  color='#D32F2F', fontsize=8.5, fontweight='bold', zorder=4)
+
+    for aid in amv_ids:
+        records = trust_log[aid]
+        if not records:
+            continue
+        ts = [r[0] for r in records]
+        scores = [r[1] for r in records]
+        c = AMV_COLORS[aid % len(AMV_COLORS)]
+        ax_trust.plot(ts, scores, label=f"AMV {aid}", color=c, linewidth=2.4, zorder=2)
+
+    # Annotate Trust Release Events
+    if trust_release_events:
+        rel_drawn = False
+        for evt in trust_release_events:
+            e_ts = evt.get('timestep', 0)
+            e_aid = evt.get('amv_id', -1)
+            e_tid = evt.get('task_id', -1)
+            e_score = evt.get('trust_score', 0.0)
+            c = AMV_COLORS[e_aid % len(AMV_COLORS)]
+
+            label_str = "Task Release Event" if not rel_drawn else None
+            ax_trust.axvline(x=e_ts, color='#C62828', linestyle=':', linewidth=1.8,
+                             alpha=0.85, label=label_str, zorder=3)
+            rel_drawn = True
+
+            ax_trust.scatter(e_ts, e_score, marker='X', color='#D32F2F', s=120,
+                             edgecolors='black', linewidths=1.0, zorder=5)
+            ax_trust.annotate(
+                f"AMV{e_aid} released T{e_tid}\n(Trust={e_score:.2f})",
+                xy=(e_ts, e_score),
+                xytext=(e_ts + 8, max(0.1, e_score - 0.15)),
+                fontsize=7.5, fontweight='bold', color='#B71C1C',
+                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='#D32F2F', alpha=0.9),
+                arrowprops=dict(arrowstyle='->', color='#D32F2F', lw=1.2),
+                zorder=6
+            )
+
+    ax_trust.set_ylabel("Trust Score", fontsize=11, fontweight='bold')
+    ax_trust.set_ylim(-0.05, 1.05)
+    ax_trust.set_title("Per-AMV Trust Score Timeline & Task Release Verification",
+                       fontsize=13, fontweight='bold')
+    ax_trust.legend(loc="upper right", fontsize=8, framealpha=0.9)
+    ax_trust.grid(True, alpha=0.3)
+
+    # ── BOTTOM: Observed Speed vs Implied Speed ─────────────────────────────
+    ax_speed.set_facecolor('#fafafa')
+
+    for aid in amv_ids:
+        records = trust_log[aid]
+        if not records:
+            continue
+        ts = [r[0] for r in records]
+        speeds = [r[3] for r in records]
+        c = AMV_COLORS[aid % len(AMV_COLORS)]
+        ax_speed.plot(ts, speeds, label=f"AMV {aid} Speed", color=c, linewidth=1.8, zorder=2)
+
+    ax_speed.set_xlabel("Timestep", fontsize=11, fontweight='bold')
+    ax_speed.set_ylabel("Observed Speed (m/s)", fontsize=11, fontweight='bold')
+    ax_speed.set_title("Physical Kinematic Speed Verification", fontsize=11, fontweight='bold')
+    ax_speed.legend(loc="upper right", fontsize=7.5, ncol=3, framealpha=0.9)
+    ax_speed.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
+# ─── Plot 17: Comprehensive 4-Panel Telemetry Dashboard ──────────────────────────
+
+def plot_telemetry_dashboard(fsm_state_log, fault_log=None, deadlock_log=None, completion_log=None,
+                             task_completion_log=None, tasks=None, trust_log=None,
+                             trust_release_events=None, fault_events=None,
+                             fault_injection_events=None,
+                             filename='plot_telemetry_dashboard.png', **kwargs):
+    """
+    Comprehensive 4-panel dashboard displaying:
+      Panel 1: FSM State & Fault State Timeline with Fault Injection Annotations
+      Panel 2: Task-to-AMV Completion Attribution Timeline & Gantt
+      Panel 3: Per-AMV Trust Score Tracking & Threshold Verification
+      Panel 4: Task Completion Attribution Summary Table
+    """
+    if fault_events is None and fault_injection_events is not None:
+        fault_events = fault_injection_events
+    if completion_log is None and task_completion_log is not None:
+        completion_log = task_completion_log
+    if task_completion_log is None and completion_log is not None:
+        task_completion_log = completion_log
+    if deadlock_log is None:
+        deadlock_log = []
+    if tasks is None:
+        tasks = []
+    if trust_log is None:
+        trust_log = {}
+
+    fig = plt.figure(figsize=(22, 14))
+    gs = fig.add_gridspec(2, 2, hspace=0.28, wspace=0.22)
+
+    ax_fsm = fig.add_subplot(gs[0, 0])
+    ax_task_gantt = fig.add_subplot(gs[0, 1])
+    ax_trust = fig.add_subplot(gs[1, 0])
+    ax_table = fig.add_subplot(gs[1, 1])
+
+    FSM_COLORS = {
+        config.FSM_HOMING:     '#90A4AE',
+        config.FSM_ASSIGNMENT: '#FFF176',
+        config.FSM_REACHING:   '#42A5F5',
+        config.FSM_SERVING:    '#66BB6A',
+        config.FSM_IDLE:       '#EF9A9A',
+        config.FSM_DEADLOCK:   '#AB47BC',
+        config.FSM_PATROL:     '#FFD180',
+    }
+
+    # ── Panel 1: FSM + Fault Timeline ────────────────────────────────────────
+    ax_fsm.set_facecolor('#fafafa')
+    amv_ids = sorted(fsm_state_log.keys())
+    has_fault_overlay = fault_log is not None and len(fault_log) > 0
+
+    for row_idx, amv_id in enumerate(amv_ids):
+        if row_idx % 2 == 0:
+            ax_fsm.axhspan(row_idx - 0.45, row_idx + 0.45, color='#f0f4f8', zorder=0)
+
+        records = fsm_state_log[amv_id]
+        if records:
+            segments = []
+            cur_state = records[0][1]
+            seg_start = records[0][0]
+            for ts, state in records[1:]:
+                if state != cur_state:
+                    segments.append((seg_start, ts, cur_state))
+                    cur_state = state
+                    seg_start = ts
+            segments.append((seg_start, records[-1][0] + 1, cur_state))
+
+            fsm_y = row_idx + 0.12 if has_fault_overlay else row_idx
+            fsm_h = 0.32 if has_fault_overlay else 0.55
+            for start, end, state in segments:
+                color = FSM_COLORS.get(state, '#95a5a6')
+                ax_fsm.barh(fsm_y, end - start, left=start, height=fsm_h,
+                            color=color, edgecolor='white', linewidth=0.5, zorder=2)
+
+        if has_fault_overlay and amv_id in fault_log:
+            f_records = fault_log[amv_id]
+            if f_records:
+                f_segments = []
+                cur_f = f_records[0][1]
+                seg_f_start = f_records[0][0]
+                for f_ts, f_state in f_records[1:]:
+                    if f_state != cur_f:
+                        f_segments.append((seg_f_start, f_ts, cur_f))
+                        cur_f = f_state
+                        seg_f_start = f_ts
+                f_segments.append((seg_f_start, f_records[-1][0] + 1, cur_f))
+
+                fault_y = row_idx - 0.18
+                fault_h = 0.22
+                for start, end, state in f_segments:
+                    f_color = FAULT_COLORS.get(state, '#95a5a6')
+                    ax_fsm.barh(fault_y, end - start, left=start, height=fault_h,
+                                color=f_color, edgecolor='white', linewidth=0.5, zorder=2)
+
+    # Deadlock & Completion lines on Panel 1
+    for evt in deadlock_log:
+        ax_fsm.axvline(x=evt['timestep'], color='#E53935', linestyle='--', linewidth=1.0, alpha=0.7, zorder=3)
+    for evt in completion_log:
+        ax_fsm.axvline(x=evt['timestep'], color='#43A047', linestyle='--', linewidth=1.0, alpha=0.5, zorder=3)
+
+    if fault_events:
+        for fe in fault_events:
+            ax_fsm.axvline(x=fe.get('timestep', 0), color='#8E24AA', linestyle='-.', linewidth=1.5, alpha=0.85, zorder=4)
+
+    ax_fsm.set_yticks(range(len(amv_ids)))
+    ax_fsm.set_yticklabels([f'AMV {i}' for i in amv_ids], fontsize=8.5, fontweight='bold')
+    ax_fsm.set_xlabel('Timestep', fontsize=9.5, fontweight='bold')
+    ax_fsm.set_title('Panel 1: Per-AMV FSM & Fault State Timeline', fontsize=11, fontweight='bold')
+    ax_fsm.grid(axis='x', alpha=0.4)
+
+    # ── Panel 2: Task-to-AMV Completion Mapping ──────────────────────────────
+    ax_task_gantt.set_facecolor('#fafafa')
+    real_tasks = [t for t in tasks if not getattr(t, 'is_dummy', False)]
+    sorted_tasks = sorted(real_tasks, key=lambda x: x.task_id)
+    n_tasks = len(sorted_tasks)
+
+    completion_map = {e['task_id']: e for e in task_completion_log}
+    for t in real_tasks:
+        if t.status == 'completed' and t.task_id not in completion_map:
+            completion_map[t.task_id] = {'amv_id': t.assigned_to, 'timestep': config.SIMULATION_TIMESTEPS}
+
+    for idx, t in enumerate(sorted_tasks):
+        if idx % 2 == 0:
+            ax_task_gantt.axhspan(idx - 0.4, idx + 0.4, color='#f0f4f8', zorder=0)
+
+        tid = t.task_id
+        if tid in completion_map and t.status == 'completed':
+            c_info = completion_map[tid]
+            aid = c_info['amv_id']
+            t_comp = c_info['timestep']
+            c_color = AMV_COLORS[aid % len(AMV_COLORS)] if aid is not None else '#4CAF50'
+            ax_task_gantt.barh(idx, t_comp, left=0, height=0.55, color=c_color,
+                               alpha=0.85, edgecolor='white', linewidth=0.8, zorder=2)
+            ax_task_gantt.scatter(t_comp, idx, marker='*', s=120, color='#FFD700',
+                                  edgecolors='black', linewidths=0.8, zorder=4)
+        else:
+            ax_task_gantt.barh(idx, 50, left=0, height=0.55, color='#E0E0E0',
+                               alpha=0.6, edgecolor='#BDBDBD', linewidth=0.8, zorder=2)
+
+    ax_task_gantt.set_yticks(range(n_tasks))
+    ax_task_gantt.set_yticklabels([f"T{t.task_id}" for t in sorted_tasks], fontsize=8, fontweight='bold')
+    ax_task_gantt.set_xlabel('Completion Timestep', fontsize=9.5, fontweight='bold')
+    ax_task_gantt.set_title('Panel 2: Task Completion Attribution Timeline', fontsize=11, fontweight='bold')
+    ax_task_gantt.grid(axis='x', alpha=0.4)
+
+    # ── Panel 3: Trust Score Timeline ────────────────────────────────────────
+    ax_trust.set_facecolor('#fafafa')
+    ax_trust.axhspan(-0.05, config.TRUST_THRESHOLD, color='#FFEBEE', alpha=0.7, zorder=0)
+    ax_trust.axhline(y=config.TRUST_THRESHOLD, color='#D32F2F', linestyle='--', linewidth=1.5,
+                     label=f'Threshold ({config.TRUST_THRESHOLD})', zorder=3)
+
+    for aid in amv_ids:
+        records = trust_log.get(aid, [])
+        if records:
+            ts = [r[0] for r in records]
+            scores = [r[1] for r in records]
+            c = AMV_COLORS[aid % len(AMV_COLORS)]
+            ax_trust.plot(ts, scores, label=f"AMV {aid}", color=c, linewidth=2.0, zorder=2)
+
+    if trust_release_events:
+        for evt in trust_release_events:
+            e_ts = evt.get('timestep', 0)
+            e_score = evt.get('trust_score', 0.0)
+            ax_trust.scatter(e_ts, e_score, marker='X', color='#D32F2F', s=90,
+                             edgecolors='black', linewidths=0.8, zorder=5)
+
+    ax_trust.set_ylabel("Trust Score", fontsize=9.5, fontweight='bold')
+    ax_trust.set_xlabel("Timestep", fontsize=9.5, fontweight='bold')
+    ax_trust.set_ylim(-0.05, 1.05)
+    ax_trust.set_title("Panel 3: Per-AMV Trust Score Tracking", fontsize=11, fontweight='bold')
+    ax_trust.legend(loc="upper right", fontsize=7.5, ncol=3, framealpha=0.9)
+    ax_trust.grid(True, alpha=0.3)
+
+    # ── Panel 4: Task Completion Table ───────────────────────────────────────
+    ax_table.axis('off')
+    table_data = []
+    cell_colors = []
+    table_headers = ["Task ID", "Prio", "Status", "Quality", "AMV", "Done Timestep"]
+
+    for t in sorted_tasks:
+        tid = t.task_id
+        is_comp = (t.status == 'completed')
+        c_info = completion_map.get(tid, {})
+        aid = c_info.get('amv_id', t.assigned_to)
+        t_comp = c_info.get('timestep', '—') if is_comp else '—'
+        status_str = "DONE" if is_comp else t.status.upper()
+        amv_str = f"AMV{aid}" if (is_comp and aid is not None) else "—"
+        
+        q_raw = getattr(t, 'completion_quality', None) if is_comp else None
+        if q_raw == 'completed_clean':
+            q_str = 'Clean'
+            q_col = '#C8E6C9'
+        elif q_raw == 'completed_degraded':
+            q_str = 'Degraded'
+            q_col = '#FFE0B2'
+        else:
+            q_str = '—'
+            q_col = '#F5F5F5'
+
+        table_data.append([f"T{tid}", f"{t.priority_weight:.2f}", status_str, q_str, amv_str, str(t_comp)])
+        if is_comp:
+            cell_colors.append(['#E8F5E9', '#E8F5E9', '#C8E6C9', q_col, '#E3F2FD', '#E8F5E9'])
+        else:
+            cell_colors.append(['#FFEBEE', '#FFEBEE', '#FFCDD2', '#F5F5F5', '#F5F5F5', '#F5F5F5'])
+
+    table = ax_table.table(cellText=table_data, colLabels=table_headers,
+                           cellColours=cell_colors, loc='center', cellLoc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(7.5)
+    table.scale(1.0, 1.15)
+
+    for col_idx in range(len(table_headers)):
+        cell = table[(0, col_idx)]
+        cell.set_facecolor('#1A237E')
+        cell.set_text_props(color='white', fontweight='bold')
+
+    ax_table.set_title("Panel 4: Task Completion Attribution Summary", fontsize=11, fontweight='bold', pad=8)
+
+    fig.suptitle('Swarm Telemetry & Verification Dashboard', fontsize=15, fontweight='bold', y=0.99)
+    out_path = _get_save_path(filename)
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
 

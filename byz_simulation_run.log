@@ -1,0 +1,1647 @@
+Random seed this run: 42
+Device: cpu
+Loaded classifier and scaler.
+
+Created 15 tasks
+Initialised ocean environment.
+Built CSV pool: normal(146), load_fault(214), sensor_failure(213), actuator_degraded_severe(199), actuator_degraded_mild(208)
+Created 5 AMVs
+
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+Initial auction complete.
+  AMV 0 [FSM=Reaching] → Task 1
+  AMV 1 [FSM=Reaching] → Task 0
+  AMV 2 [FSM=Reaching] → Task 12
+  AMV 3 [FSM=Reaching] → Task 10
+  AMV 4 [FSM=Reaching] → Task 1
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.93)
+
+============================================================
+Running simulation for 500 timesteps...
+============================================================
+
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.92)
+  [ARRIVED] AMV1 reached T0 true_dist=12.7m dvl_error=3.3m
+[T=10] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=10] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=10] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=10] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=10] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.91)
+  [ARRIVED] AMV3 reached T10 true_dist=14.2m dvl_error=1.6m
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.91)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [ARRIVED] AMV0 reached T1 true_dist=13.0m dvl_error=1.9m
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [ARRIVED] AMV4 reached T1 true_dist=14.8m dvl_error=1.5m
+[T=20] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=20] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=20] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=20] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=20] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.90)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.89)
+  [ARRIVED-DVL] AMV2 T12 est_dist=14.9m true_dist=15.5m dvl_error=2.8m
+[T=30] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=30] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=30] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=30] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=30] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.88)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.87)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.87)
+[T=40] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=40] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=40] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=40] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=40] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.86)
+  [ARRIVED-DVL] AMV1 T6 est_dist=12.6m true_dist=16.5m dvl_error=4.3m
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.86)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.85)
+[T=50] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=50] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=50] AMV2 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=50] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=50] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+  [LOCAL PAUSE] t=50: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=50: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=50: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=50: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=50: AMV4 unilaterally paused due to degradation under deadlock
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T2 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T3 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T5 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T7 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T8 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T9 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T11 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T13 pre-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  [UNASSIGNED] AMV4 stripped of T2 post-auction
+  [T=50] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [VETOED] AMV4 ✗ T9 (symbolic rule vetoed assignment)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.85)
+  t= 50  tasks_done=5/15  mt=5  reallocs=0  deadlocks=0  pkt_drop=0.336
+  AMV0 | Reaching     | T2(d=952m)             | done=1 | E=78%
+  AMV1 | Reaching     | T2(d=109m)             | done=2 | E=85%
+  AMV2 | Reaching     | T2(d=406m)             | done=1 | E=84%
+  AMV3 | Reaching     | T2(d=611m)             | done=1 | E=80%
+  AMV4 | Assignment   | None                   | done=0 | E=82%
+  Tasks — unassigned:[2, 3, 4, 5, 7, 8, 9, 11, 13, 14] active:[] completed:[0, 1, 6, 10, 12]
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T2 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T3 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T5 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T7 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T8 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T9 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T11 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T13 pre-auction
+  [T=55] AMV4 | Rule:confidence_gate | VETO | CNN confidence 45.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T14 pre-auction
+  [UNASSIGNED] AMV4 stripped of T2 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.84)
+[T=60] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=60] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=60] AMV2 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=60] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=60] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.83)
+  [TRUST MONITOR] t=60: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.50. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.82)
+[T=70] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=70] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=70] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=70] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=70] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.81)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.80)
+  [ARRIVED] AMV1 reached T2 true_dist=13.8m dvl_error=5.5m
+[T=80] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=80] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=80] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=80] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=80] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.80)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+  [T=85] AMV0 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=85] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=85] AMV3 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV3 blocked from T4 pre-auction
+  [T=85] AMV4 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [UNASSIGNED] AMV0 stripped of T4 post-auction
+  [UNASSIGNED] AMV2 stripped of T4 post-auction
+  [UNASSIGNED] AMV3 stripped of T4 post-auction
+  [UNASSIGNED] AMV4 stripped of T4 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.79)
+[T=90] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=90] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=90] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=90] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=90] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+  [T=90] AMV0 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=90] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=90] AMV3 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV3 blocked from T4 pre-auction
+  [T=90] AMV4 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [UNASSIGNED] AMV0 stripped of T4 post-auction
+  [UNASSIGNED] AMV2 stripped of T4 post-auction
+  [UNASSIGNED] AMV3 stripped of T4 post-auction
+  [UNASSIGNED] AMV4 stripped of T4 post-auction
+  [FORCED] AMV0 → T9 (energy=70% avail=0.35)
+  [FORCED] AMV2 → T8 (energy=79% avail=0.79)
+  [FORCED] AMV3 → T13 (energy=73% avail=0.36)
+  [FORCED] AMV4 → T14 (energy=79% avail=0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.78)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.77)
+[T=100] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=100] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=100] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=100] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=100] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+  [LOCAL PAUSE] t=100: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=100: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=100: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=100: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=100: AMV2 reset to Assignment due to merged alert
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T3 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T4 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T5 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T7 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T8 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T9 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T11 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T13 pre-auction
+  [T=100] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T14 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T3 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T5 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T7 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T8 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T9 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T11 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T13 pre-auction
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [UNASSIGNED] AMV1 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [UNASSIGNED] AMV4 stripped of T3 post-auction
+  [T=100] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [VETOED] AMV2 ✗ T8 (symbolic rule vetoed assignment)
+  [T=100] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [VETOED] AMV4 ✗ T14 (symbolic rule vetoed assignment)
+  t=100  tasks_done=6/15  mt=5  reallocs=0  deadlocks=0  pkt_drop=0.391
+  AMV0 | Reaching     | T3(d=501m)             | done=1 | E=68%
+  AMV1 | Assignment   | None                   | done=3 | E=76%
+  AMV2 | Assignment   | None                   | done=1 | E=78%
+  AMV3 | Reaching     | T3(d=670m)             | done=1 | E=70%
+  AMV4 | Assignment   | None                   | done=0 | E=77%
+  Tasks — unassigned:[3, 4, 5, 7, 8, 9, 11, 13, 14] active:[] completed:[0, 1, 2, 6, 10, 12]
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T3 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [T=105] AMV1 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV1 blocked from T4 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T5 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T7 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T8 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T9 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T11 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T13 pre-auction
+  [T=105] AMV1 | Rule:confidence_gate | VETO | CNN confidence 42.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV1 blocked from T14 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [T=105] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=105] AMV2 | Rule:confidence_gate | VETO | CNN confidence 58.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T3 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [T=105] AMV4 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T5 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T7 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T8 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T9 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T11 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T13 pre-auction
+  [T=105] AMV4 | Rule:confidence_gate | VETO | CNN confidence 40.3% below threshold, bid suppressed for safety
+  [SCREENED] AMV4 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.76)
+  [UNASSIGNED] AMV1 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [UNASSIGNED] AMV4 stripped of T3 post-auction
+[T=110] AMV0 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=110] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=110] AMV2 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=110] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=110] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+  [T=110] AMV1 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV1 blocked from T4 pre-auction
+  [T=110] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=110] AMV4 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 0's task 3
+  [SCREENED] AMV4 blocked from T4 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.76)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.75)
+[T=120] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=120] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=120] AMV2 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=120] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=120] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.74)
+  [TRUST MONITOR] t=120: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=3.00. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_mild' as 'normal' (availability: 0.73)
+[T=130] AMV0 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=130] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=130] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=130] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=130] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [LOCAL PAUSE] t=130: AMV2 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=130: AMV0 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=130: AMV1 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=130: AMV3 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=130: AMV4 reset to Assignment due to merged alert
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [T=130] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [VETOED] AMV0 ✗ T9 (symbolic rule vetoed assignment)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+  [TRUST MONITOR] t=130: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=3.00. Violation count=2
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [T=135] AMV0 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=135] AMV0 | Rule:confidence_gate | VETO | CNN confidence 51.5% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.72)
+[T=140] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=140] AMV1 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=140] AMV2 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=140] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=140] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+  [LOCAL PAUSE] t=140: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=140: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=140: AMV3 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=140: AMV1 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=140: AMV4 reset to Assignment due to merged alert
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=140] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [T=140] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [VETOED] AMV2 ✗ T7 (symbolic rule vetoed assignment)
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.71)
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [T=145] AMV0 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=145] AMV0 | Rule:confidence_gate | VETO | CNN confidence 53.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [T=145] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=145] AMV2 | Rule:confidence_gate | VETO | CNN confidence 39.8% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'normal' as 'normal' (availability: 0.70)
+[T=150] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=150] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=150] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=150] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=150] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=150] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+  [LOCAL PAUSE] t=150: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=150: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=150: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=150: AMV3 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=150: AMV4 reset to Assignment due to merged alert
+  [STRESS] Mass fault injected at t=150
+  [ASSERT STRESS] t=150: AMV0 fault state overridden: before=actuator_degraded_severe -> after=actuator_degraded_severe
+  [ASSERT STRESS] t=150: AMV1 fault state overridden: before=actuator_degraded_severe -> after=actuator_degraded_severe
+  [ASSERT STRESS] t=150: AMV2 fault state overridden: before=actuator_degraded_severe -> after=actuator_degraded_severe
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=150] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=150] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.69)
+  t=150  tasks_done=6/15  mt=5  reallocs=0  deadlocks=0  pkt_drop=0.398
+  AMV0 | Assignment   | None                   | done=1 | E=61%
+  AMV1 | Reaching     | T3(d=531m)             | done=3 | E=69%
+  AMV2 | Assignment   | None                   | done=1 | E=73%
+  AMV3 | Reaching     | T3(d=466m)             | done=1 | E=58%
+  AMV4 | Reaching     | T3(d=187m)             | done=0 | E=71%
+  Tasks — unassigned:[3, 4, 5, 7, 8, 9, 11, 13, 14] active:[] completed:[0, 1, 2, 6, 10, 12]
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T3 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [T=155] AMV0 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV0 blocked from T4 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T5 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T7 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T8 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T9 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T11 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T13 pre-auction
+  [T=155] AMV0 | Rule:confidence_gate | VETO | CNN confidence 42.2% below threshold, bid suppressed for safety
+  [SCREENED] AMV0 blocked from T14 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T3 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [T=155] AMV2 | Rule:collision_radius | VETO | Task 4 within 18.1m collision radius of AMV 1's task 3
+  [SCREENED] AMV2 blocked from T4 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T5 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T7 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T8 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T9 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T11 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T13 pre-auction
+  [T=155] AMV2 | Rule:confidence_gate | VETO | CNN confidence 36.7% below threshold, bid suppressed for safety
+  [SCREENED] AMV2 blocked from T14 pre-auction
+  [UNASSIGNED] AMV0 stripped of T3 post-auction
+  [UNASSIGNED] AMV2 stripped of T3 post-auction
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+[T=160] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=160] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=160] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=160] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=160] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=160] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+  [LOCAL PAUSE] t=160: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=160: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=160: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=160: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=160: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.68)
+  [TRUST MONITOR] t=160: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.49. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.67)
+[T=170] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=170] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=170] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=170] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=170] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=170] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=170] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 3 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=170: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=170: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=170: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=170: AMV3 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=170: AMV4 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+  [TRUST MONITOR] t=170: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.49. Violation count=2
+  [TRUST MONITOR] t=170: AMV4 speed discrepancy! Declared=normal (implied=5.00), Observed=2.99. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.66)
+[T=180] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=180] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=180] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=180] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=180] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=180] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=180] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 4 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=180: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=180: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=180: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=180: AMV3 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=180: AMV4 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.65)
+  [TRUST MONITOR] t=180: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.49. Violation count=3
+  [TRUST DECAY] t=180: AMV1 trust score decayed: 1.00 -> 0.70
+  [TRUST MONITOR] t=180: AMV3 speed discrepancy! Declared=actuator_degraded_mild (implied=3.00), Observed=1.48. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.64)
+  [ARRIVED] AMV4 reached T3 true_dist=12.3m dvl_error=0.9m
+[T=190] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=190] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=190] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=190] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=190] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=190] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=190] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 5 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=190: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=190: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=190: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=190: AMV3 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [LOCAL PAUSE] t=196: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=196: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=196: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=196: AMV3 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [LOCAL PAUSE] t=197: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=197: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=197: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=197: AMV3 unilaterally paused due to degradation under deadlock
+  [ARRIVED] AMV4 reached T4 true_dist=14.0m dvl_error=1.8m
+[T=200] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=200] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=200] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=200] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=200] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=200] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=200] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 6 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  t=200  tasks_done=7/15  mt=5  reallocs=0  deadlocks=1  pkt_drop=0.426
+  AMV0 | Reaching     | T5(d=479m)             | done=1 | E=55%
+  AMV1 | Reaching     | T5(d=77m)              | done=3 | E=63%
+  AMV2 | Reaching     | T5(d=226m)             | done=1 | E=68%
+  AMV3 | Reaching     | T5(d=244m)             | done=1 | E=47%
+  AMV4 | Serving      | T4(d=14m)              | done=1 | E=64%
+  Tasks — unassigned:[4, 7, 8, 9, 11, 13, 14] active:[5] completed:[0, 1, 2, 3, 6, 10, 12]
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.63)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+[T=210] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=210] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=210] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=210] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=210] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=210] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=210] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 7 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=210: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=210: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=210: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=210: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=210: AMV3 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.62)
+  [TRUST MONITOR] t=210: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.50. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.61)
+[T=220] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=220] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=220] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=220] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=220] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=220] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=220] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 8 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=220: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=220: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=220: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=220: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=220: AMV3 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.60)
+  [TRUST MONITOR] t=220: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.50. Violation count=2
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+[T=230] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=230] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=230] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=230] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=230] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=230] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=230] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 9 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=230: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=230: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=230: AMV2 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=230: AMV3 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=230: AMV4 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.59)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.58)
+[T=240] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=240] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=240] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=240] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=240] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=240] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=240] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 10 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=240: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=240: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=240: AMV2 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=240: AMV3 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=240: AMV4 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [ARRIVED] AMV1 reached T5 true_dist=14.4m dvl_error=1.8m
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.57)
+  [ARRIVED] AMV3 reached T5 true_dist=14.0m dvl_error=4.3m
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+[T=250] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=250] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=250] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=250] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=250] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=250] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=250] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 11 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=250: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=250: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=250: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=250: AMV3 unilaterally paused due to degradation under deadlock
+  [FORCED] AMV4 → T14 (energy=55% avail=0.55)
+  t=250  tasks_done=9/15  mt=5  reallocs=0  deadlocks=2  pkt_drop=0.411
+  AMV0 | Idle         | None                   | done=1 | E=47%
+  AMV1 | Idle         | None                   | done=4 | E=56%
+  AMV2 | Idle         | None                   | done=1 | E=60%
+  AMV3 | Idle         | None                   | done=1 | E=36%
+  AMV4 | Reaching     | T14(d=66m)             | done=2 | E=55%
+  Tasks — unassigned:[7, 8, 9, 11, 13] active:[14] completed:[0, 1, 2, 3, 4, 5, 6, 10, 12]
+  [DEADLOCK RESET] t=253: AMV4 reset to Assignment due to deadlock alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [LOCAL PAUSE] t=256: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=256: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=256: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=256: AMV3 unilaterally paused due to degradation under deadlock
+  [DEADLOCK RESET] t=256: AMV4 reset to Assignment due to deadlock alert
+[T=260] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=260] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=260] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=260] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=260] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=260] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=260] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 12 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.56)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.55)
+[T=270] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=270] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=270] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=270] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=270] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=270] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=270] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 13 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=270: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=270: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=270: AMV2 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=270: AMV3 reset to Assignment due to merged alert
+  [IMMEDIATE RESET] t=270: AMV4 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [TRUST MONITOR] t=270: AMV1 speed discrepancy! Declared=normal (implied=5.00), Observed=1.50. Violation count=1
+  [TRUST MONITOR] t=270: AMV3 speed discrepancy! Declared=normal (implied=5.00), Observed=3.00. Violation count=1
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.54)
+  [ARRIVED] AMV2 reached T7 true_dist=14.8m dvl_error=0.6m
+[T=280] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=280] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=280] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=280] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=280] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=280] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=280] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 14 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=280: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=280: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=280: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=280: AMV3 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+[T=290] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=290] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=290] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=290] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=290] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=290] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=290] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 15 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=290: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=290: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=290: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=290: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=290: AMV3 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+[T=300] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=300] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=300] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=300] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=300] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=300] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=300] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 16 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=300: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=300: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=300: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=300: AMV4 unilaterally paused due to degradation under deadlock
+  [IMMEDIATE RESET] t=300: AMV3 reset to Assignment due to merged alert
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [T=300] AMV4 | Rule:confidence_gate | VETO | CNN confidence 53.8% below threshold, bid suppressed for safety
+  [VETOED] AMV4 ✗ T14 (symbolic rule vetoed assignment)
+  t=300  tasks_done=10/15  mt=5  reallocs=0  deadlocks=2  pkt_drop=0.392
+  AMV0 | Reaching     | T8(d=636m)             | done=1 | E=40%
+  AMV1 | Idle         | None                   | done=4 | E=53%
+  AMV2 | Reaching     | T8(d=215m)             | done=2 | E=55%
+  AMV3 | Reaching     | T8(d=214m)             | done=1 | E=27%
+  AMV4 | Idle         | None                   | done=2 | E=50%
+  Tasks — unassigned:[9, 11, 13, 14] active:[8] completed:[0, 1, 2, 3, 4, 5, 6, 7, 10, 12]
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.53)
+[T=310] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=310] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=310] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=310] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=310] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=310] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=310] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 17 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=310: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=310: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=310: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=310: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=310: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [LOCAL PAUSE] t=316: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=316: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=316: AMV3 unilaterally paused due to degradation under deadlock
+[T=320] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=320] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=320] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=320] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=320] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=320] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=320] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 18 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+[T=330] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=330] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=330] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=330] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=330] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=330] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=330] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 19 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=330: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=330: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=330: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=330: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=330: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [LOCAL PAUSE] t=336: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=336: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=336: AMV3 unilaterally paused due to degradation under deadlock
+[T=340] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=340] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=340] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=340] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=340] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=340] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 5/5 AMVs degraded. Halting new assignments.
+[T=340] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 20 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.52)
+[T=350] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=350] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=350] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=350] AMV3 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=350] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=350] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 5/5 AMVs degraded. Halting new assignments.
+[T=350] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 21 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=350: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=350: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=350: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=350: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=350: AMV4 unilaterally paused due to degradation under deadlock
+  t=350  tasks_done=10/15  mt=5  reallocs=0  deadlocks=5  pkt_drop=0.372
+  AMV0 | Idle         | None                   | done=1 | E=34%
+  AMV1 | Idle         | None                   | done=4 | E=51%
+  AMV2 | Idle         | None                   | done=2 | E=50%
+  AMV3 | Idle         | None                   | done=1 | E=21%
+  AMV4 | Idle         | None                   | done=2 | E=48%
+  Tasks — unassigned:[8, 9, 11, 13, 14] active:[] completed:[0, 1, 2, 3, 4, 5, 6, 7, 10, 12]
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [LOCAL PAUSE] t=356: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=356: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=356: AMV3 unilaterally paused due to degradation under deadlock
+[T=360] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=360] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=360] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=360] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=360] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=360] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=360] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 22 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+[T=370] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=370] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=370] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=370] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=370] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=370] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=370] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 23 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=370: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=370: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=370: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=370: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=370: AMV4 unilaterally paused due to degradation under deadlock
+  [FORCED] AMV4 → T14 (energy=47% avail=0.31)
+  [LOCAL PAUSE] t=372: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [LOCAL PAUSE] t=376: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=376: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=376: AMV3 unilaterally paused due to degradation under deadlock
+[T=380] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=380] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=380] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=380] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=380] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=380] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=380] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 24 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.51)
+  [ARRIVED] AMV3 reached T8 true_dist=11.7m dvl_error=1.0m
+[T=390] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=390] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=390] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=390] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=390] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=390] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=390] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 25 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=390: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=390: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=390: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=390: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [LOCAL PAUSE] t=394: AMV3 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+[T=400] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=400] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=400] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=400] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=400] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=400] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=400] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 26 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [FORCED] AMV4 → T14 (energy=46% avail=0.30)
+  t=400  tasks_done=11/15  mt=4  reallocs=0  deadlocks=7  pkt_drop=0.366
+  AMV0 | Idle         | None                   | done=1 | E=29%
+  AMV1 | Idle         | None                   | done=4 | E=50%
+  AMV2 | Idle         | None                   | done=2 | E=46%
+  AMV3 | Idle         | None                   | done=2 | E=17%
+  AMV4 | Reaching     | T14(d=82m)             | done=2 | E=46%
+  Tasks — unassigned:[9, 11, 13] active:[14] completed:[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+[T=410] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=410] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=410] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=410] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=410] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=410] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=410] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 27 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+[T=420] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=420] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=420] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=420] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=420] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=420] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=420] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 28 consecutive times. Human intervention recommended.
+  [LOCAL PAUSE] t=420: AMV0 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=420: AMV1 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=420: AMV2 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=420: AMV3 unilaterally paused due to degradation under deadlock
+  [LOCAL PAUSE] t=420: AMV4 unilaterally paused due to degradation under deadlock
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.50)
+[T=430] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=430] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=430] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=430] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=430] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_mild enforces max speed 3.0 m/timestep
+[T=430] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=430] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 29 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [FORCED] AMV4 → T14 (energy=41% avail=0.27)
+  [ARRIVED-DVL] AMV4 T14 est_dist=15.0m true_dist=18.1m dvl_error=5.4m
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+[T=440] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=440] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=440] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=440] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=440] AMV4 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=440] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 4/5 AMVs degraded. Halting new assignments.
+[T=440] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 30 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+[T=450] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=450] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=450] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=450] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=450] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=450] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=450] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 31 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.49)
+  t=450  tasks_done=12/15  mt=3  reallocs=0  deadlocks=8  pkt_drop=0.359
+  AMV0 | Idle         | None                   | done=1 | E=27%
+  AMV1 | Idle         | None                   | done=4 | E=49%
+  AMV2 | Idle         | None                   | done=2 | E=44%
+  AMV3 | Idle         | None                   | done=2 | E=15%
+  AMV4 | Idle         | None                   | done=3 | E=40%
+  Tasks — unassigned:[9, 11, 13] active:[] completed:[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14]
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+[T=460] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=460] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=460] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=460] AMV3 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=460] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=460] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=460] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 32 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+[T=470] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=470] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=470] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=470] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=470] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=470] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=470] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 33 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+[T=480] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=480] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=480] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=480] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=480] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=480] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=480] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 34 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.48)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+[T=490] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=490] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=490] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=490] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=490] AMV4 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=490] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=490] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 35 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+[T=500] AMV0 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=500] AMV1 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=500] AMV2 | Rule:speed_cap | OK | Fault state actuator_degraded_severe enforces max speed 1.5 m/timestep
+[T=500] AMV3 | Rule:speed_cap | OK | Fault state load_fault enforces max speed 4.0 m/timestep
+[T=500] AMV4 | Rule:speed_cap | OK | Fault state normal enforces max speed 5.0 m/timestep
+[T=500] AMV-1 | Rule:fleet_audit | VETO | Fleet critical: 3/5 AMVs degraded. Halting new assignments.
+[T=500] AMV-1 | Rule:escalation_flag | VETO | ESCALATION: Fleet audit failed 36 consecutive times. Human intervention recommended.
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [BYZANTINE MASK] AMV1 masking fault state 'actuator_degraded_severe' as 'normal' (availability: 0.47)
+  [FORCED] AMV4 → T13 (energy=38% avail=0.38)
+  t=500  tasks_done=12/15  mt=3  reallocs=0  deadlocks=8  pkt_drop=0.351
+  AMV0 | Idle         | None                   | done=1 | E=24%
+  AMV1 | Idle         | None                   | done=4 | E=47%
+  AMV2 | Idle         | None                   | done=2 | E=42%
+  AMV3 | Idle         | None                   | done=2 | E=12%
+  AMV4 | Reaching     | T13(d=410m)            | done=3 | E=38%
+  Tasks — unassigned:[9, 11] active:[13] completed:[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14]
+
+============================================================
+SIMULATION SUMMARY (Miele et al. Upgrade)
+============================================================
+Tasks completed: 12 / 15
+Total reallocation events: 0
+Total EDMC global deadlocks: 8
+Final mt: 3
+Packet stats — sent: 4987, dropped: 1748, drop rate: 0.3505, congestion drops: 333
+
+AMV 0 [Idle]:  dist=822.9m  tasks_done=1  energy=24.2  depth=127.7m  faults_seen={'load_fault', 'actuator_degraded_severe', 'normal'}
+AMV 1 [Idle]:  dist=744.2m  tasks_done=4  energy=46.9  depth=19.0m  faults_seen={'actuator_degraded_mild', 'actuator_degraded_severe', 'normal'}
+AMV 2 [Idle]:  dist=805.3m  tasks_done=2  energy=42.5  depth=46.2m  faults_seen={'load_fault', 'actuator_degraded_severe', 'normal'}
+AMV 3 [Idle]:  dist=1326.6m  tasks_done=2  energy=12.5  depth=79.0m  faults_seen={'load_fault', 'actuator_degraded_mild', 'actuator_degraded_severe', 'normal'}
+AMV 4 [Reaching]:  dist=1188.7m  tasks_done=3  energy=38.0  depth=52.3m  faults_seen={'load_fault', 'actuator_degraded_mild', 'actuator_degraded_severe', 'normal'}
+
+Deadlock events:
+  t=190: mt 5→4, idled AMV alerted_gossip
+  t=250: mt 5→4, idled AMV alerted_gossip
+  t=310: mt 5→4, idled AMV alerted_gossip
+  t=330: mt 5→4, idled AMV alerted_gossip
+  t=350: mt 5→4, idled AMV alerted_gossip
+  t=370: mt 5→4, idled AMV alerted_gossip
+  t=390: mt 5→4, idled AMV alerted_gossip
+  t=420: mt 4→3, idled AMV alerted_gossip
+
+============================================================
+SIMULATION METRICS REPORT
+============================================================
+  Task Completion Rate          │  80.00%
+  Mean Task Completion Time     │  166.0 timesteps
+  System Throughput             │  0.0240 tasks/ts
+  Mean AMV Availability         │  0.317
+  Fault Impact Score            │  68.96%
+  Deadlock Frequency            │  1.60 per 100 ts
+  Mean Packet Loss Rate         │  35.05%
+  Energy Efficiency             │  23.51 energy/task
+  Auction Convergence Rate      │  1.62 iters/round
+  Connectivity Maintenance      │  92.20%
+  Physics Impact on Faults      │  +0.458 (correlation)
+  Thermocline Crossing Penalty  │  36.43%
+  Congestion Drop Rate          │  6.68% (333 drops)
+============================================================
+
+
+============================================================
+STRESS SCENARIO SUMMARY
+============================================================
+  Scenario:            mass_fault
+  Start timestep:      150
+  Fired:               Yes
+  Task Completion:     12 / 15 (80%)
+  Total Deadlocks:     8
+  Packet Drop Rate:    0.3505
+  Congestion Drops:    333
+  AMV0 — energy=24.2% tasks_done=1 fault=actuator_degraded_severe
+  AMV1 — energy=46.9% tasks_done=4 fault=actuator_degraded_severe
+  AMV2 — energy=42.5% tasks_done=2 fault=actuator_degraded_severe
+  AMV3 — energy=12.5% tasks_done=2 fault=load_fault
+  AMV4 — energy=38.0% tasks_done=3 fault=normal
+============================================================
+
+Task active delay metrics:
+  Mean task delay: 36.73 ts
+  Max task delay:  84.00 ts
+  Never completed: 3 tasks
+  [DEBUG CONGESTION] raw comms.congestion_drops = 333
+  [DEBUG CONGESTION] module-level comms.RAW_CONGESTION_DROPS = 333
+
+All done!

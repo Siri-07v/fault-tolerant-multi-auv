@@ -11,6 +11,8 @@ import numpy as np
 
 import config
 
+RAW_CONGESTION_DROPS = 0
+
 
 class CommsMesh:
     """Dynamic acoustic communication graph for AMV swarm."""
@@ -24,7 +26,7 @@ class CommsMesh:
             ocean_env:     OceanEnvironment instance — optional
         """
         self.graph = nx.Graph()
-        self._message_queue = []  # list of (delivery_timestep, receiver_id, payload)
+        self._message_queue = []  # list of (delivery_timestep, sender_id, receiver_id, payload)
         self._total_sent = 0
         self._total_dropped = 0
         self._thermocline_messages = 0     # messages subject to thermocline penalty
@@ -101,6 +103,7 @@ class CommsMesh:
                         latency_ms=self._latency_ms(dist_3d, avg_depth),
                         packet_loss_prob=plp,
                         thermocline_cross=((da < thermo) != (db < thermo)),
+                        weight=1.0 - plp,
                     )
 
     # ── Messaging ───────────────────────────────────────────────────────────
@@ -119,6 +122,8 @@ class CommsMesh:
         link_key = (sender_id, receiver_id)
         current_count = self._per_link_counts.get(link_key, 0)
         if current_count >= config.MAX_MESSAGES_PER_LINK:
+            global RAW_CONGESTION_DROPS
+            RAW_CONGESTION_DROPS += 1
             self.congestion_drops += 1
             self._total_dropped += 1
             return False
@@ -132,30 +137,108 @@ class CommsMesh:
             self._thermocline_messages += 1
 
         # Bernoulli: success with prob (1 - plp)
-        if random.random() < plp:
-            self._total_dropped += 1
-            return False
+        if config.ALLOCATOR_MODE in ("auction", "vanilla_auction"):
+            is_critical = (isinstance(payload, dict) and 
+                           (payload.get("type") in ("deadlock_alert", "outbid", "edmc") 
+                            or payload.get("message_priority") == "critical"))
+            if is_critical:
+                # Extra retransmission attempt for critical recovery messages
+                success = random.random() >= plp
+                if not success:
+                    success = random.random() >= plp
+                if not success:
+                    self._total_dropped += 1
+                    return False
+            else:
+                if random.random() < plp:
+                    self._total_dropped += 1
+                    return False
+        else:
+            if random.random() < plp:
+                self._total_dropped += 1
+                return False
 
         latency = edge["latency_ms"]
-        delivery_ts = current_timestep + math.ceil(latency / config.TIMESTEP_DURATION_MS)
-        self._message_queue.append((delivery_ts, receiver_id, payload))
+        # Consensus/negotiation messages must be delivered synchronously within the same timestep
+        msg_type = payload.get("type") if isinstance(payload, dict) else None
+        if msg_type in ("auction", "pause_rank", "edmc", "cbba"):
+            delivery_ts = current_timestep
+        else:
+            delivery_ts = current_timestep + math.ceil(latency / config.TIMESTEP_DURATION_MS)
+        # Checksum / Tampering Logic
+        if isinstance(payload, dict):
+            # Determine if this message should be spoofed
+            should_spoof = False
+            msg_type = payload.get("type")
+            spoof_messages = getattr(config, "SPOOF_MESSAGES", [])
+            if msg_type in spoof_messages:
+                should_spoof = True
+            elif (sender_id, receiver_id) in spoof_messages or (receiver_id, sender_id) in spoof_messages:
+                should_spoof = True
+                
+            from security.message_integrity import MessageIntegrityVerifier
+            if should_spoof:
+                spoof_mode = getattr(config, "SPOOF_MODE", None)
+                if spoof_mode == "corrupt_payload":
+                    payload = payload.copy()
+                    if payload.get("type") == "auction" and sender_id == 1:
+                        payload["bid_value"] = 999.0
+                        spoofed_tid = getattr(config, "SPOOFED_TASK_ID", None)
+                        if spoofed_tid is not None:
+                            payload["task_id"] = spoofed_tid
+                    payload["checksum"] = MessageIntegrityVerifier.generate_checksum(payload)
+                elif spoof_mode == "bypass_checksum":
+                    payload = payload.copy()
+                    payload["checksum"] = MessageIntegrityVerifier.generate_checksum(payload)
+                    if payload.get("type") == "auction" and sender_id == 1:
+                        payload["bid_value"] = 999.0
+                        spoofed_tid = getattr(config, "SPOOFED_TASK_ID", None)
+                        if spoofed_tid is not None:
+                            payload["task_id"] = spoofed_tid
+            else:
+                payload = payload.copy()
+                payload["checksum"] = MessageIntegrityVerifier.generate_checksum(payload)
+
+        self._message_queue.append((delivery_ts, sender_id, receiver_id, payload))
         return True
 
     def deliver_messages(self, current_timestep):
         """
         Return {receiver_id: [payloads]} for all messages ready for delivery.
         """
-        # Reset per-link bandwidth counts each timestep
-        self._per_link_counts = {}
+        # Reset per-link bandwidth counts once per simulation timestep
+        if getattr(self, "_last_reset_timestep", -1) != current_timestep:
+            self._per_link_counts = {}
+            self._last_reset_timestep = current_timestep
 
         ready = defaultdict(list)
         remaining = []
-        for delivery_ts, receiver_id, payload in self._message_queue:
+        for delivery_ts, sender_id, receiver_id, payload in self._message_queue:
             if delivery_ts <= current_timestep:
-                ready[receiver_id].append(payload)
+                from security.message_integrity import MessageIntegrityVerifier
+                is_valid = True
+                if isinstance(payload, dict):
+                    is_valid = MessageIntegrityVerifier.verify_checksum(payload)
+                    if not is_valid:
+                        print(f"  [CHECKSUM FAILURE] t={current_timestep}: Message from AMV{sender_id} to AMV{receiver_id} failed integrity verification! Dropping payload: {payload}")
+                
+                if is_valid:
+                    ready[receiver_id].append(payload)
+                else:
+                    self._total_dropped += 1
             else:
-                remaining.append((delivery_ts, receiver_id, payload))
+                remaining.append((delivery_ts, sender_id, receiver_id, payload))
         self._message_queue = remaining
+
+        # Priority sorting: place critical messages at the front of the per-timestep queue
+        if config.ALLOCATOR_MODE in ("auction", "vanilla_auction"):
+            for receiver_id in ready:
+                ready[receiver_id].sort(
+                    key=lambda msg: 0 if (isinstance(msg, dict) and 
+                                          (msg.get("type") in ("deadlock_alert", "outbid", "edmc") 
+                                           or msg.get("message_priority") == "critical")) else 1
+                )
+
         return dict(ready)
 
     def get_graph_snapshot(self):
@@ -177,9 +260,37 @@ class CommsMesh:
         """Estimate algebraic connectivity (λ₂) of the current graph."""
         if self.graph.number_of_nodes() < 2:
             return 0.0
-        if not nx.is_connected(self.graph):
+        
+        # Create a filtered copy of the graph keeping only reliable links
+        reliable_graph = nx.Graph()
+        reliable_graph.add_nodes_from(self.graph.nodes())
+        for u, v, d in self.graph.edges(data=True):
+            w = d.get('weight', 1.0)
+            # Link is reliable if packet loss probability is below 85%
+            if w >= 0.15:
+                reliable_graph.add_edge(u, v, weight=w)
+                
+        if not nx.is_connected(reliable_graph):
             return 0.0
         try:
-            return float(nx.algebraic_connectivity(self.graph))
+            # Construct dense Laplacian manually for speed
+            nodes = sorted(list(reliable_graph.nodes()))
+            n = len(nodes)
+            node_to_idx = {node: idx for idx, node in enumerate(nodes)}
+            L = np.zeros((n, n))
+            for u, v, d in reliable_graph.edges(data=True):
+                w = d.get('weight', 1.0)
+                ui = node_to_idx[u]
+                vi = node_to_idx[v]
+                L[ui, vi] = -w
+                L[vi, ui] = -w
+                L[ui, ui] += w
+                L[vi, vi] += w
+            
+            # Compute eigenvalues (sorted ascending)
+            eigenvalues = np.linalg.eigvalsh(L)
+            if len(eigenvalues) >= 2:
+                return float(eigenvalues[1])
+            return 0.0
         except Exception:
             return 0.0

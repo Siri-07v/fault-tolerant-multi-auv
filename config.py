@@ -83,6 +83,10 @@ PRIORITY_WEIGHT_MAX = 1.5
 
 # ─── CBBA (legacy, kept for reference) ──────────────────────────────────────────
 MAX_CONSENSUS_ITERATIONS = 10
+ALLOCATOR_MODE = "auction"  # "auction" | "cbba" | "vanilla_auction"
+SAVE_PLOTS = True
+
+
 
 # ─── Miele et al. benefit function parameters ──────────────────────────────────
 BENEFIT_A = 0.15            # sigmoid steepness (shallower = more bidding competition)
@@ -92,6 +96,7 @@ BENEFIT_TW = 40             # max waiting time before priority term activates (t
 TASK_DWELL_TIME = 8         # timesteps AMV spends serving before task completes
 MAX_AUCTION_ITERATIONS = 6  # fewer iterations, more unresolved conflicts
 EDMC_RESET_ON_ASSIGNMENT = True
+DEADLOCK_TIMEOUT = 30
 
 # ─── FSM state names ───────────────────────────────────────────────────────────
 FSM_HOMING = "Homing"
@@ -145,12 +150,52 @@ INJECT_MISCLASSIFICATION = False
 MISCLASSIFICATION_TARGET_AMV = 1
 
 # ─── Stress Testing ──────────────────────────────────────────────────────
-STRESS_SCENARIO = 'none'       # options: 'none', 'amv_loss', 'comm_blackout', 'mass_fault'
+STRESS_SCENARIO = 'none'       # options: 'none', 'amv_loss', 'comm_blackout', 'mass_fault', 'serving_fault_injection'
 STRESS_START_TIMESTEP = 150
 STRESS_END_TIMESTEP = 300
+
+# Serving-State Fault Injection Stress Test Settings (timed shortly before dwell expiration)
+SERVING_FAULT_AMV = 0                  # Target AMV ID to inject fault while in Serving state
+SERVING_FAULT_DWELL_TRIGGER = 3        # Injected when dwell_timer countdown reaches this value
+SERVING_FAULT_TARGET_STATE = "actuator_degraded_severe"  # Injected fault class
+SERVING_FAULT_START_TIMESTEP = 0       # Earliest timestep to activate serving fault trigger
 
 # ─── Acoustic Bandwidth Constraint ───────────────────────────────────────
 MAX_MESSAGES_PER_LINK = 5
 
 # ─── Fixed Seed (set to None for time-based, or an int for deterministic) ─
 FIXED_SEED = None
+
+# ─── Telemetry Logging ──────────────────────────────────────────────────
+TELEMETRY_LOG_PATH = None
+
+# ─── Sensor Package Assumption Note ───────────────────────────────────────
+# The 7-channel sensor set (depth, w_row, w_pitch, w_yaw, a_x, a_y, a_z) is a general,
+# platform-agnostic IMU + depth sensor suite utilized for the 1D-CNN fault classification pipeline.
+# Additional sensor payloads (e.g. optical cameras, sidescan sonar, acoustic modems) are AMV-hardware
+# dependent and outside the scope of the onboard kinematic fault classifier.
+
+# ─── Security / Adversarial Settings ───────────────────────────────────────
+COMPROMISED_AMVS = []  # List of AMV IDs that are compromised
+BYZANTINE_MODE = None  # Options: None, "inflate_priority", "mask_fault_state"
+
+# TrustScore Settings
+TRUST_UPDATE_INTERVAL = 10
+TRUST_DECAY_RATE = 0.3
+TRUST_THRESHOLD = 0.4
+TRUST_TOLERANCE = 0.30  # ±30% speed deviation tolerance
+
+# Message Integrity Spoofing / Tampering
+SPOOF_MESSAGES = []  # List of message types (e.g. ["auction"]) or link tuples (e.g. [(1, 2)]) to spoof
+SPOOF_MODE = None  # None | "corrupt_payload" | "bypass_checksum"
+SPOOFED_TASK_ID = None  # Optional task ID to force in spoofed auction bids
+
+# GPS Spoofing / Tampering at Surface
+GPS_SPOOF_ENABLED = False
+GPS_SPOOF_OFFSET = (0.0, 0.0)  # (dx, dy) in meters
+GPS_SANITY_THRESHOLD = 30.0    # maximum allowed discrepancy between GPS and DVL estimate (meters)
+
+# ─── Open-Set Fault Detection Settings ────────────────────────────────────
+OPENSET_PARAMS_PATH = "openset_params.pkl"
+OPENSET_THRESHOLD = 15.00      # Mahalanobis distance threshold (tuned on validation split)
+OPENSET_DETECTOR_ENABLED = True

@@ -4,6 +4,11 @@ Run train.py first to produce fault_classifier_best.pt and scaler.pkl.
 """
 import os
 import sys
+# Reconfigure stdout/stderr to UTF-8 to prevent charmap encoding crashes on Windows
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
+import json
 import pickle
 import random
 import time
@@ -34,6 +39,9 @@ from visualize import (
     plot_fsm_timeline,
     plot_fsm_diagram,
     plot_confidence_histogram,
+    plot_task_completion_mapping,
+    plot_trust_timeline,
+    plot_telemetry_dashboard,
 )
 import metrics as sim_metrics
 from symbolic_rules import SymbolicRuleEngine, log_verdict
@@ -94,7 +102,14 @@ def main():
     with open(config.SCALER_PATH, "rb") as f:
         scaler = pickle.load(f)
 
-    print("Loaded classifier and scaler.\n")
+    openset_detector = None
+    params_path = getattr(config, "OPENSET_PARAMS_PATH", "openset_params.pkl")
+    if getattr(config, "OPENSET_DETECTOR_ENABLED", True) and os.path.exists(params_path):
+        from openset import OpenSetDetector
+        openset_detector = OpenSetDetector.load(params_path)
+        print(f"Loaded classifier, scaler, and OpenSetDetector (threshold={getattr(config, 'OPENSET_THRESHOLD', 15.0):.2f}).\n")
+    else:
+        print("Loaded classifier and scaler.\n")
 
     # ── Gather CSVs for sensor replay ───────────────────────────────────────
     replay_csvs = _gather_test_csvs()
@@ -143,8 +158,13 @@ def main():
     amv_depths = {a.amv_id: a.depth for a in amvs}
     comms = CommsMesh(amv_positions, amv_depths=amv_depths, ocean_env=ocean_env)
     deadlock_events = []  # shared list — same object used by consensus and viz
-    consensus = MieleConsensus(n_amvs=config.N_AMVS, n_tasks=config.N_TASKS,
-                               deadlock_events=deadlock_events)
+    if config.ALLOCATOR_MODE in ("auction", "vanilla_auction"):
+        consensus = MieleConsensus(n_amvs=config.N_AMVS, n_tasks=config.N_TASKS,
+                                   deadlock_events=deadlock_events)
+    elif config.ALLOCATOR_MODE == "cbba":
+        from cbba import CBBAAllocator
+        consensus = CBBAAllocator(n_amvs=config.N_AMVS, n_tasks=config.N_TASKS,
+                                  deadlock_events=deadlock_events)
 
     # ── Live 3D Visualization ─────────────────────────────────────────────────
     live_viz = None
@@ -153,19 +173,13 @@ def main():
         live_viz = LiveSimulation3D()
         print("Live 3D visualization window opened.")
 
-    # ── Initial FSM: Homing → Assignment → first auction ────────────────────
-    for amv in amvs:
-        amv.compute_availability()
-        amv.enter_assignment()  # Homing → Assignment on first task arrival
-
-    consensus.run_auction_round(amvs, tasks, comms, current_timestep=0)
-    print("Initial auction complete.")
-    for a in amvs:
-        tid = a.assigned_task.task_id if a.assigned_task else None
-        print(f"  AMV {a.amv_id} [FSM={a.fsm_state}] → Task {tid}")
-
     # ── Logging structures ──────────────────────────────────────────────────
     log_rows = []
+    telemetry_log = []
+    fsm_transitions = []                # list of {timestep, amv_id, old_state, new_state, trigger_reason}
+    trust_log = defaultdict(list)       # {amv_id: [(timestep, trust_score, declared_fault_state, observed_speed), ...]}
+    trust_release_events = []          # [{timestep, amv_id, task_id, trust_score, declared_fault_state, observed_speed}, ...]
+    fault_injection_events = []        # [{timestep, amv_id, fault_state, type, ...}, ...]
     availability_log = defaultdict(list)
     energy_log = defaultdict(list)
     fault_log = defaultdict(list)
@@ -173,6 +187,22 @@ def main():
     energy_snapshots = {}       # {ts: {amv_id: energy}}
     proposal_log = defaultdict(list)  # {amv_id: [(ts, m_p_i)]}
     mt_log = []                 # [(ts, mt)]
+
+    # Bind global transition log and initialize timestep on all AMVs
+    for amv in amvs:
+        amv._global_transition_log = fsm_transitions
+        amv._current_timestep = 0
+
+    # ── Initial FSM: Homing → Assignment → first auction ────────────────────
+    for amv in amvs:
+        amv.compute_availability()
+        amv.enter_assignment(reason="sim_start_first_auction", timestep=0)
+
+    consensus.run_auction_round(amvs, tasks, comms, current_timestep=0)
+    print("Initial auction complete.")
+    for a in amvs:
+        tid = a.assigned_task.task_id if a.assigned_task else None
+        print(f"  AMV {a.amv_id} [FSM={a.fsm_state}] → Task {tid}")
 
     # Fix 4: benefit snapshot — hold value constant between auctions
     last_auction_benefit = consensus.compute_total_benefit(amvs, tasks)
@@ -183,6 +213,7 @@ def main():
     # Record initial positions
     for amv in amvs:
         trajectory_log[amv.amv_id].append((amv.position[0], amv.position[1]))
+        trust_log[amv.amv_id].append((0, float(amv.trust_score), str(getattr(amv, "declared_fault_state", amv.fault_state)), float(getattr(amv, "observed_speed", amv.speed))))
 
     # Fix A: per-AMV reallocation log for energy plot markers
     reallocation_events_by_amv = {i: [] for i in range(config.N_AMVS)}
@@ -214,7 +245,11 @@ def main():
 
     # ── Symbolic Rule Engine ────────────────────────────────────────────────
     rule_engine = SymbolicRuleEngine()
+    comms.rule_engine = rule_engine
+    stalled_amv_timesteps = 0
+    task_active_delay = {t.task_id: 0 for t in tasks}
     amv_speed_caps = {i: 5.0 for i in range(config.N_AMVS)}  # per-AMV speed cap
+    deadlock_timeout_fires = 0
 
     # ── CNN Confidence Logging ─────────────────────────────────────────────
     confidence_log = []  # [{timestep, amv_id, max_prob, class}, ...]
@@ -227,17 +262,92 @@ def main():
     # ── Stress scenario state ──────────────────────────────────────────────
     stress_fired = False
     comm_blackout_active = False
-
-    # ── Simulation loop ─────────────────────────────────────────────────────
+    unknown_fault_log = []
+        # ── Simulation loop ─────────────────────────────────────────────────────
     print(f"\n{'='*60}")
     print(f"Running simulation for {config.SIMULATION_TIMESTEPS} timesteps...")
     print(f"{'='*60}\n")
-
     for t in range(1, config.SIMULATION_TIMESTEPS + 1):
         realloc_events_this_step = 0
         auction_ran_this_step = False
 
-        # 1 — Push sensor readings & increment task waiting times
+        for amv in amvs:
+            amv._current_timestep = t
+
+        # Process delivered messages at start of step (strictly comms-gated deconfliction & recovery)
+        delivered_messages = comms.deliver_messages(t)
+        
+        # Gossip-style retransmission of pending deadlock alerts
+        if config.ALLOCATOR_MODE == "auction":
+            consensus.process_pending_alerts(comms, t)
+        
+        # 1. Process outbid messages
+        for amv in amvs:
+            payloads = delivered_messages.get(amv.amv_id, [])
+            for payload in payloads:
+                if payload.get("type") == "outbid":
+                    tid = payload["task_id"]
+                    if amv.assigned_task is not None and amv.assigned_task.task_id == tid:
+                        if config.ALLOCATOR_MODE == "vanilla_auction" and getattr(amv, 'task_assigned_duration', 0) > 30:
+                            continue
+                        amv.assigned_task.status = "unassigned"
+                        amv.assigned_task.assigned_to = None
+                        amv.assigned_task = None
+                        amv.enter_idle(reason=f"outbid_by_AMV{payload.get('winner_id')}_for_T{tid}", timestep=t)
+                        print(f"  [OUTBID MESSAGE] t={t}: AMV{amv.amv_id} released T{tid} due to outbid from AMV{payload['winner_id']}")
+
+        # 2. Process deadlock alerts
+        deadlock_alert_recipients = set()
+        for amv_id, payloads in delivered_messages.items():
+            for payload in payloads:
+                if payload.get("type") == "deadlock_alert":
+                    deadlock_alert_recipients.add(amv_id)
+
+        if deadlock_alert_recipients and config.ALLOCATOR_MODE == "auction":
+            consensus.mt = max(0, consensus.mt - 1)
+            paused_ids = consensus.run_pausing_algorithm(amvs, tasks, comms, t)
+            for amv_id in deadlock_alert_recipients:
+                if amv_id in paused_ids:
+                    continue
+                amv = next((a for a in amvs if a.amv_id == amv_id), None)
+                if amv is not None and amv.fsm_state in (config.FSM_REACHING, config.FSM_DEADLOCK):
+                    if amv.assigned_task is not None:
+                        amv.assigned_task.status = "unassigned"
+                        amv.assigned_task.assigned_to = None
+                        amv.assigned_task = None
+                    amv.enter_assignment(reason="deadlock_alert_reset", timestep=t)
+                    print(f"  [DEADLOCK RESET] t={t}: AMV{amv.amv_id} reset to Assignment due to deadlock alert")
+
+        # Deadlock timeout fallback and tick tracking
+        if config.ALLOCATOR_MODE == "auction":
+            for amv in amvs:
+                if amv.fsm_state == config.FSM_DEADLOCK:
+                    amv.deadlock_ticks += 1
+                    if amv.deadlock_ticks > config.DEADLOCK_TIMEOUT:  # Parameterized timeout
+                        deadlock_timeout_fires += 1
+                        if amv.assigned_task is not None:
+                            amv.assigned_task.status = "unassigned"
+                            amv.assigned_task.assigned_to = None
+                            amv.assigned_task = None
+                        amv.enter_assignment(reason="deadlock_timeout_fallback", timestep=t)
+                        amv.deadlock_ticks = 0
+                        print(f"  [DEADLOCK TIMEOUT FALLBACK] t={t}: AMV{amv.amv_id} unilaterally broke deadlock after {config.DEADLOCK_TIMEOUT} ticks")
+                else:
+                    amv.deadlock_ticks = 0
+
+        # Update task assignment duration and release completed tasks for vanilla_auction/cbba baselines
+        for amv in amvs:
+            if amv.assigned_task is not None:
+                amv.task_assigned_duration = getattr(amv, 'task_assigned_duration', 0) + 1
+            else:
+                amv.task_assigned_duration = 0
+            
+            if config.ALLOCATOR_MODE in ("auction", "vanilla_auction", "cbba"):
+                if amv.assigned_task is not None and amv.assigned_task.status == "completed":
+                    amv.assigned_task = None
+                    amv.enter_assignment(reason="completed_task_released", timestep=t)
+
+        # 1 ── Push sensor readings & increment task waiting times
         for amv in amvs:
             amv.push_sensor_reading()
         for task in tasks:
@@ -269,6 +379,33 @@ def main():
         for amv in amvs:
             amv.check_task_reached()
 
+        # ── Stress scenario: Serving fault injection (timed before dwell expiration) ──
+        if config.STRESS_SCENARIO == 'serving_fault_injection' and not stress_fired:
+            target_amv_id = getattr(config, "SERVING_FAULT_AMV", 0)
+            trigger_dwell = getattr(config, "SERVING_FAULT_DWELL_TRIGGER", 2)
+            target_fault = getattr(config, "SERVING_FAULT_TARGET_STATE", "actuator_degraded_severe")
+            target_start_ts = getattr(config, "SERVING_FAULT_START_TIMESTEP", 0)
+
+            for amv in amvs:
+                if (amv.amv_id == target_amv_id or target_amv_id is None) and amv.fsm_state == config.FSM_SERVING:
+                    if t >= target_start_ts and amv.dwell_timer <= trigger_dwell:
+                        before_state = amv.fault_state
+                        amv.fault_state = target_fault
+                        amv.compute_availability()
+                        if amv.assigned_task is not None:
+                            amv.assigned_task._had_fault_during_serving = True
+                        task_id_serving = amv.assigned_task.task_id if amv.assigned_task else None
+                        fault_injection_events.append({
+                            "timestep": t,
+                            "amv_id": amv.amv_id,
+                            "fault_state": target_fault,
+                            "type": "serving_fault_injection",
+                            "details": f"Mid-serving fault injected into AMV{amv.amv_id} at dwell_timer={amv.dwell_timer} for task T{task_id_serving} (prev_fault={before_state})"
+                        })
+                        print(f"  [STRESS MID-SERVING FAULT] t={t}: Injected fault '{target_fault}' on AMV{amv.amv_id} while in Serving state (dwell_timer={amv.dwell_timer}, Task=T{task_id_serving})")
+                        stress_fired = True
+                        break
+
         # 4 — Tick Serving AMVs (dwell timer) → check completion
         completions_this_step = []
         for amv in amvs:
@@ -289,8 +426,10 @@ def main():
 
         # 4b — AMVs that just went Idle with no remaining tasks → Patrol
         for amv in amvs:
+            if getattr(amv, 'paused_until_timestep', 0) > t:
+                continue
             if amv.fsm_state == config.FSM_IDLE and amv.assigned_task is None:
-                amv.enter_patrol(all_tasks=tasks)
+                amv.enter_patrol(all_tasks=tasks, reason="idle_no_remaining_tasks", timestep=t)
 
         # 4b2 — Dynamic task respawn when all tasks complete
         if (config.DYNAMIC_TASK_RESPAWN and
@@ -301,8 +440,8 @@ def main():
                 new_id = max(tk.task_id for tk in tasks) + 1 + k
                 new_pos = [random.uniform(50, 950), random.uniform(50, 950)]
                 new_task = Task(task_id=new_id, position=new_pos,
-                               priority_weight=random.uniform(0.5, 1.0),
-                               arrival_order=new_id)
+                                priority_weight=random.uniform(0.5, 1.0),
+                                arrival_order=new_id)
                 tasks.append(new_task)
             consensus.mt = min(len(amvs), config.N_RESPAWN_TASKS)
             consensus.run_auction_round(amvs, tasks, comms, current_timestep=t)
@@ -310,7 +449,7 @@ def main():
                 if (amv.assigned_task is not None
                         and not amv.assigned_task.is_dummy
                         and amv.fsm_state == config.FSM_ASSIGNMENT):
-                    amv.enter_reaching()
+                    amv.enter_reaching(reason=f"respawn_auction_assigned_T{amv.assigned_task.task_id}", timestep=t)
 
         # 4c — Forced patrol for stuck AMVs (idle/assignment >8 steps)
         for amv in amvs:
@@ -320,7 +459,7 @@ def main():
                 amv_idle_counter[amv.amv_id] = 0
 
             if amv_idle_counter[amv.amv_id] > 8:
-                amv.enter_patrol(all_tasks=tasks)
+                amv.enter_patrol(all_tasks=tasks, reason="forced_patrol_idle_timeout", timestep=t)
                 amv_idle_counter[amv.amv_id] = 0
 
         # 5 — Deliver queued messages
@@ -329,7 +468,14 @@ def main():
         # 6 — Every FAULT_UPDATE_INTERVAL: fault detection, availability, graph rebuild
         if t % config.FAULT_UPDATE_INTERVAL == 0:
             for amv in amvs:
-                amv.update_fault_state(classifier, scaler, device)
+                if config.STRESS_SCENARIO == 'mass_fault' and t >= config.STRESS_START_TIMESTEP and amv.amv_id in (0, 1, 2):
+                    amv.fault_state = 'actuator_degraded_severe'
+                    amv.compute_availability()
+                elif config.STRESS_SCENARIO == 'serving_fault_injection' and stress_fired and amv.amv_id == getattr(config, "SERVING_FAULT_AMV", 0):
+                    # Maintain injected fault state
+                    amv.compute_availability()
+                else:
+                    amv.update_fault_state(classifier, scaler, device)
 
                 # ── Misclassification injection ────────────────────────────
                 if (config.INJECT_MISCLASSIFICATION
@@ -340,7 +486,7 @@ def main():
                     print(f"  [MISCLASSIFY] t={t} AMV{amv.amv_id} "
                           f"true=actuator_degraded_severe → overridden to normal")
 
-                # ── Monkey-patch CNN softmax probabilities for Rule 4 ──────
+                # ── CNN Inference & Open-Set Mahalanobis Detection ─────────
                 if len(amv.sensor_buffer) >= config.WINDOW_SIZE:
                     _window = np.array(list(amv.sensor_buffer), dtype=np.float32)
                     _window = (_window - scaler["mean"]) / scaler["std"]
@@ -348,7 +494,24 @@ def main():
                     with torch.no_grad():
                         _logits = classifier(_x)
                         _probs = torch.softmax(_logits, dim=1).squeeze().detach().cpu().numpy()
+                        _feats = classifier.extract_features(_x).squeeze().detach().cpu().numpy()
                     amv._last_fault_probs = _probs
+
+                    # Compute Mahalanobis distance if openset detector is active
+                    if openset_detector is not None:
+                        _m_dist = float(openset_detector.compute_mahalanobis_distance(_feats))
+                        _is_unknown = bool(openset_detector.is_unknown(_m_dist))
+                        amv._last_mahalanobis_dist = _m_dist
+                        amv.is_unknown_fault = _is_unknown
+                        if _is_unknown:
+                            unknown_fault_log.append({
+                                'timestep': t,
+                                'amv_id': amv.amv_id,
+                                'mahalanobis_dist': _m_dist,
+                            })
+                    else:
+                        amv._last_mahalanobis_dist = 0.0
+                        amv.is_unknown_fault = False
 
                     # ── CNN Confidence logging ─────────────────────────────
                     max_prob = float(np.max(_probs))
@@ -358,6 +521,8 @@ def main():
                         'amv_id': amv.amv_id,
                         'max_prob': max_prob,
                         'class': classified_class,
+                        'mahalanobis_dist': getattr(amv, '_last_mahalanobis_dist', 0.0),
+                        'is_unknown': getattr(amv, 'is_unknown_fault', False),
                     })
 
                 amv.compute_availability()
@@ -367,7 +532,10 @@ def main():
                 post_verdicts = rule_engine.evaluate_post_fault(amv)
                 for v in post_verdicts:
                     log_verdict(v, t, amv.amv_id)
-                amv_speed_caps[amv.amv_id] = rule_engine.get_speed_cap(amv)
+                if config.ALLOCATOR_MODE != "vanilla_auction":
+                    amv_speed_caps[amv.amv_id] = rule_engine.get_speed_cap(amv)
+                else:
+                    amv_speed_caps[amv.amv_id] = 5.0
 
             # ── Symbolic: fleet-wide audit (Rules 7 & 8) ──────────────────
             fleet_verdicts = rule_engine.evaluate_fleet(amvs)
@@ -378,15 +546,65 @@ def main():
             amv_depths = {a.amv_id: a.depth for a in amvs}
             comms.rebuild_graph(amv_positions, amv_depths)
 
+            # Apply comm_blackout override immediately if active
+            if config.STRESS_SCENARIO == 'comm_blackout' and config.STRESS_START_TIMESTEP <= t <= config.STRESS_END_TIMESTEP:
+                for u, v in comms.graph.edges():
+                    comms.graph.edges[u, v]['packet_loss_prob'] = 0.90
+                    comms.graph.edges[u, v]['weight'] = 0.10
+
             # Check local deadlock (fault-based) for Reaching AMVs
             for amv in amvs:
                 if amv.check_local_deadlock():
                     pass  # state transitions handled inside
 
             # Run EDMC deadlock detection
-            global_deadlock = consensus.run_edmc(amvs, comms, t)
-            if global_deadlock:
-                consensus.handle_global_deadlock(amvs, tasks, comms, t)
+            if config.ALLOCATOR_MODE == "auction":
+                # Check for confirmed-lost vehicles
+                lost_amv_ids = {a.amv_id for a in amvs if a.energy <= 0.0}
+                lost_needs_realloc = False
+                if lost_amv_ids:
+                    # Clear prices of the tasks held by lost vehicles and trigger global alert immediately (fast path)
+                    for amv in amvs:
+                        if amv.energy <= 0.0 and amv.amv_id not in consensus.handled_lost_amvs:
+                            consensus.handled_lost_amvs.add(amv.amv_id)
+                            curr_assign = consensus.local_assignments.get(amv.amv_id)
+                            if curr_assign is not None:
+                                tid = curr_assign[0]
+                                for aid in consensus.local_prices:
+                                    if tid in consensus.local_prices[aid]:
+                                        del consensus.local_prices[aid][tid]
+                                consensus.local_assignments[amv.amv_id] = None
+                                lost_needs_realloc = True
+                                print(f"  [FAST PATH] t={t}: Cleared local prices for T{tid} previously held by lost AMV{amv.amv_id}")
+                
+                alerted_amvs = []
+                if lost_needs_realloc:
+                    global_deadlock = True
+                    alerted_amvs = [a.amv_id for a in amvs if a.energy > 0.0]
+                    print(f"  [FAST PATH] t={t}: Confirmed-lost AMV detected. Skipping EDMC and triggering deadlock alert.")
+                else:
+                    global_deadlock, alerted_amvs = consensus.run_edmc(amvs, comms, t)
+                
+                if global_deadlock:
+                    consensus.handle_global_deadlock(amvs, tasks, comms, t)
+                    auction_ran_this_step = True
+                
+                # Process the merged alerts immediately at the end of the step!
+                if alerted_amvs:
+                    paused_ids = consensus.run_pausing_algorithm(amvs, tasks, comms, t)
+                    for amv_id in alerted_amvs:
+                        if amv_id in paused_ids:
+                            continue
+                        amv = next((a for a in amvs if a.amv_id == amv_id), None)
+                        if amv is not None and amv.fsm_state in (config.FSM_REACHING, config.FSM_DEADLOCK):
+                            if amv.assigned_task is not None:
+                                amv.assigned_task.status = "unassigned"
+                                amv.assigned_task.assigned_to = None
+                                amv.assigned_task = None
+                            amv.enter_assignment(reason="edmc_deadlock_immediate_reset", timestep=t)
+                            print(f"  [IMMEDIATE RESET] t={t}: AMV{amv.amv_id} reset to Assignment due to merged alert")
+            elif config.ALLOCATOR_MODE == "cbba":
+                consensus.run_auction_round(amvs, tasks, comms, t)
                 auction_ran_this_step = True
 
         # ── Stress scenario injection ──────────────────────────────────────
@@ -394,19 +612,39 @@ def main():
             print(f"  [STRESS] AMV loss injected at t={t}")
             for amv in amvs:
                 if amv.amv_id in (0, 1):
+                    before_energy = amv.energy
                     amv.energy = 0.0
                     if amv.assigned_task is not None:
                         amv.assigned_task.status = 'unassigned'
                         amv.assigned_task.assigned_to = None
                         amv.assigned_task = None
-                    amv.enter_idle()
+                    amv.enter_idle(reason="stress_amv_energy_loss", timestep=t)
+                    fault_injection_events.append({
+                        "timestep": t,
+                        "amv_id": amv.amv_id,
+                        "fault_state": "energy_depleted_zero",
+                        "type": "amv_loss",
+                        "details": f"Energy set to 0.0 from {before_energy:.1f}%"
+                    })
+                    print(f"  [ASSERT STRESS] t={t}: AMV{amv.amv_id} energy overridden: before={before_energy:.1f}% -> after=0.0%")
             stress_fired = True
 
         if config.STRESS_SCENARIO == 'comm_blackout':
             if config.STRESS_START_TIMESTEP <= t <= config.STRESS_END_TIMESTEP:
                 # Override all edge packet loss to 0.90
                 for u, v in comms.graph.edges():
+                    before_plp = comms.graph.edges[u, v]['packet_loss_prob']
                     comms.graph.edges[u, v]['packet_loss_prob'] = 0.90
+                    comms.graph.edges[u, v]['weight'] = 0.10
+                if t == config.STRESS_START_TIMESTEP:
+                    fault_injection_events.append({
+                        "timestep": t,
+                        "amv_id": -1,
+                        "fault_state": "comm_blackout",
+                        "type": "comm_blackout",
+                        "details": f"Fleet packet drop rate overridden to 90% (t={config.STRESS_START_TIMESTEP}..{config.STRESS_END_TIMESTEP})"
+                    })
+                    print(f"  [DEBUG OVERRIDE] t={t}: packet_loss_prob overridden fleet-wide to 0.90")
                 if t % 50 == 0 or t == config.STRESS_START_TIMESTEP:
                     print(f"  [STRESS] Communication blackout active t={t}")
                 comm_blackout_active = True
@@ -423,8 +661,17 @@ def main():
             print(f"  [STRESS] Mass fault injected at t={t}")
             for amv in amvs:
                 if amv.amv_id in (0, 1, 2):
+                    before_state = amv.fault_state
                     amv.fault_state = 'actuator_degraded_severe'
                     amv.compute_availability()
+                    fault_injection_events.append({
+                        "timestep": t,
+                        "amv_id": amv.amv_id,
+                        "fault_state": amv.fault_state,
+                        "type": "mass_fault",
+                        "details": f"Fault overridden from {before_state} to {amv.fault_state}"
+                    })
+                    print(f"  [ASSERT STRESS] t={t}: AMV{amv.amv_id} fault state overridden: before={before_state} -> after={amv.fault_state}")
             stress_fired = True
 
         # ── Track misclassification stats ──────────────────────────────────
@@ -453,7 +700,7 @@ def main():
             
             # ── Symbolic: Pre-auction screening (Bug 3 Part A) ──────────
             blocked_pairs = {a.amv_id: set() for a in amvs}
-            if not getattr(rule_engine, "fleet_audit_strikes", 0) >= 3:  # Only screen if not escalated
+            if config.ALLOCATOR_MODE != "vanilla_auction" and not getattr(rule_engine, "fleet_audit_strikes", 0) >= 3:  # Only screen if not escalated
                 unassigned_tasks = [tk for tk in tasks if tk.status == 'unassigned' and not tk.is_dummy]
                 active_tasks = len([tk for tk in tasks if tk.status == 'active'])
                 remaining_tasks = len(unassigned_tasks) + active_tasks
@@ -468,17 +715,13 @@ def main():
 
             # ── Symbolic: Post-auction safety net (Bug 3 Part B) ─────────
             for amv in amvs:
-                if amv.assigned_task is not None and getattr(amv, "fsm_state", "") == config.FSM_REACHING:
-                    # AMV just got a task, check if it was blocked
-                    # Note: We check REACHING here because later the block forces REACHING. Wait, the auction assigns tasks but doesn't change FSM state automatically here. Let's just check if it has a task.
-                    pass
                 if amv.assigned_task is not None and amv.assigned_task.task_id in blocked_pairs[amv.amv_id]:
                     # Release the task
                     released_tid = amv.assigned_task.task_id
                     amv.assigned_task.status = 'unassigned'
                     amv.assigned_task.assigned_to = None
                     amv.assigned_task = None
-                    amv.enter_assignment()
+                    amv.enter_assignment(reason=f"symbolic_post_realloc_screen_T{released_tid}", timestep=t)
                     print(f"  [UNASSIGNED] AMV{amv.amv_id} stripped of T{released_tid} post-auction")
 
             auction_ran_this_step = True
@@ -489,21 +732,24 @@ def main():
         active_tasks = len([tk for tk in tasks if tk.status == 'active'])
         remaining = unassigned + active_tasks
         if remaining > 0:
-            consensus.mt = max(consensus.mt, min(remaining, config.N_AMVS))
+            healthy_count = len([a for a in amvs if a.energy > 0])
+            consensus.mt = max(consensus.mt, min(remaining, healthy_count))
 
         # Periodic auction every 5 timesteps — ensures idle AMVs get assignments
         if t % 5 == 0 and not auction_ran_this_step:
             # Fix 2 — Wake all idle and patrol AMVs before auction
             for amv in amvs:
+                if getattr(amv, 'paused_until_timestep', 0) > t:
+                    continue
                 if (amv.assigned_task is None and
                         amv.fsm_state in (config.FSM_IDLE,
                                           config.FSM_PATROL,
                                           config.FSM_ASSIGNMENT)):
-                    amv.enter_assignment()
+                    amv.enter_assignment(reason="wake_for_periodic_auction", timestep=t)
 
             # ── Symbolic: Pre-auction screening (Bug 3 Part A) ──────────
             blocked_pairs = {a.amv_id: set() for a in amvs}
-            if not getattr(rule_engine, "fleet_audit_strikes", 0) >= 3:
+            if config.ALLOCATOR_MODE != "vanilla_auction" and not getattr(rule_engine, "fleet_audit_strikes", 0) >= 3:
                 unassigned_tasks = [tk for tk in tasks if tk.status == 'unassigned' and not tk.is_dummy]
                 active_tasks = len([tk for tk in tasks if tk.status == 'active'])
                 remaining_tasks = len(unassigned_tasks) + active_tasks
@@ -524,7 +770,7 @@ def main():
                     amv.assigned_task.status = 'unassigned'
                     amv.assigned_task.assigned_to = None
                     amv.assigned_task = None
-                    amv.enter_assignment()  # Return to assignment-seeking state
+                    amv.enter_assignment(reason=f"symbolic_post_periodic_auction_screen_T{released_tid}", timestep=t)  # Return to assignment-seeking state
                     print(f"  [UNASSIGNED] AMV{amv.amv_id} stripped of T{released_tid} post-auction")
 
             # Force reaching for any AMV that just got assigned
@@ -532,7 +778,7 @@ def main():
                 if (amv.assigned_task is not None
                         and not amv.assigned_task.is_dummy
                         and amv.fsm_state == config.FSM_ASSIGNMENT):
-                    amv.enter_reaching()
+                    amv.enter_reaching(reason=f"periodic_auction_assigned_T{amv.assigned_task.task_id}", timestep=t)
             auction_ran_this_step = True
 
         # Fix 3 — Hard force-assignment safety net every 10 timesteps
@@ -544,6 +790,7 @@ def main():
                         and amv.fsm_state in (config.FSM_IDLE, config.FSM_ASSIGNMENT,
                                               config.FSM_PATROL)
                         and amv.availability > config.BID_AVAILABILITY_THRESHOLD
+                        and getattr(amv, 'trust_score', 1.0) >= config.TRUST_THRESHOLD
                         and amv.energy > config.ENERGY_REALLOC_THRESHOLD
                         and unassigned_tasks):
                     nearest = min(unassigned_tasks,
@@ -555,7 +802,7 @@ def main():
                     active_for_force = len([tk for tk in tasks if tk.status == 'active'])
                     remain_for_force = len(unassigned_tasks) + active_for_force
 
-                    if not rule_engine.is_assignment_safe(amv, nearest, amvs, remain_for_force):
+                    if config.ALLOCATOR_MODE != "vanilla_auction" and not rule_engine.is_assignment_safe(amv, nearest, amvs, remain_for_force):
                         print(f"  [VETOED] AMV{amv.amv_id} ✗ T{nearest.task_id} "
                               f"(symbolic rule vetoed assignment)")
                         continue
@@ -563,7 +810,7 @@ def main():
                     nearest.status = 'active'
                     nearest.assigned_to = amv.amv_id
                     amv.assigned_task = nearest
-                    amv.enter_reaching()
+                    amv.enter_reaching(reason=f"force_assignment_safety_net_T{nearest.task_id}", timestep=t)
                     unassigned_tasks.remove(nearest)
                     print(f"  [FORCED] AMV{amv.amv_id} → T{nearest.task_id} "
                           f"(energy={amv.energy:.0f}% avail={amv.availability:.2f})")
@@ -583,7 +830,7 @@ def main():
         # 8 — Deadlock AMVs → back to Assignment on reassignment trigger
         for amv in amvs:
             if amv.fsm_state == config.FSM_DEADLOCK and amv.assigned_task is None:
-                amv.enter_assignment()
+                amv.enter_assignment(reason="deadlock_unassigned_retry", timestep=t)
                 
                 # ── Symbolic: Pre-auction screening (Bug 3) ──────────
                 blocked_pairs = {a.amv_id: set() for a in amvs}
@@ -607,7 +854,7 @@ def main():
                         a.assigned_task.status = 'unassigned'
                         a.assigned_task.assigned_to = None
                         a.assigned_task = None
-                        a.enter_assignment()
+                        a.enter_assignment(reason=f"symbolic_deadlock_realloc_screen_T{released_tid}", timestep=t)
                         print(f"  [UNASSIGNED] AMV{a.amv_id} stripped of T{released_tid} post-auction")
 
                 auction_ran_this_step = True
@@ -638,6 +885,30 @@ def main():
         # 12b — Log FSM state every timestep (for FSM timeline plot)
         for amv in amvs:
             fsm_state_log[amv.amv_id].append((t, amv.fsm_state))
+
+        # 12c — TrustScore update
+        for amv in amvs:
+            if not hasattr(amv, 'fsm_history'):
+                amv.fsm_history = [amv.fsm_state]
+            amv.fsm_history.append(amv.fsm_state)
+            
+            task_pos = amv.assigned_task.position.copy() if amv.assigned_task is not None else None
+            if not hasattr(amv, 'task_pos_history'):
+                amv.task_pos_history = [task_pos]
+            amv.task_pos_history.append(task_pos)
+            
+        if t % config.TRUST_UPDATE_INTERVAL == 0:
+            from security.trust import TrustScoreTracker
+            tracker = TrustScoreTracker(config.N_AMVS)
+            tracker.update_trust_scores(amvs, trajectory_log, t, trust_release_events=trust_release_events)
+
+        for amv in amvs:
+            trust_log[amv.amv_id].append((
+                t,
+                float(getattr(amv, "trust_score", 1.0)),
+                str(getattr(amv, "declared_fault_state", amv.fault_state)),
+                float(getattr(amv, "observed_speed", amv.speed))
+            ))
 
         # 13 — Physics logging
         for amv in amvs:
@@ -670,11 +941,86 @@ def main():
             energy_log[amv.amv_id].append((t, amv.energy))
             fault_log[amv.amv_id].append((t, amv.fault_state))
 
+        # Track stalled AMV-timesteps
+        stalled_amvs_this_step = 0
+        for amv in amvs:
+            if amv.energy > 0 and amv.assigned_task is not None and not amv.assigned_task.is_dummy:
+                if amv.fsm_state in (config.FSM_REACHING, config.FSM_DEADLOCK):
+                    is_stalled = False
+                    if config.ALLOCATOR_MODE == "auction":
+                        # For auction, it is stalled if it is in the DEADLOCK state
+                        if amv.fsm_state == config.FSM_DEADLOCK:
+                            is_stalled = True
+                    elif config.ALLOCATOR_MODE == "vanilla_auction":
+                        if amv.fsm_state == config.FSM_DEADLOCK or amv.availability < config.BID_AVAILABILITY_THRESHOLD:
+                            is_stalled = True
+                        elif amv.fault_state == "sensor_failure" and amv.depth > config.THERMOCLINE_DEPTH * 0.9:
+                            is_stalled = True
+                        else:
+                            # Blocked by a dead or severely degraded vehicle holding a conflicting task
+                            task_id = amv.assigned_task.task_id
+                            conflict_stalled = False
+                            for other in amvs:
+                                if other.amv_id != amv.amv_id and other.assigned_task is not None and other.assigned_task.task_id == task_id:
+                                    if other.energy <= 0 or other.fault_state in ("actuator_degraded_severe", "sensor_failure"):
+                                        conflict_stalled = True
+                                        break
+                            if conflict_stalled:
+                                is_stalled = True
+                    elif config.ALLOCATOR_MODE == "cbba":
+                        # For CBBA, it is stalled if availability is low or physically blocked by rule or dead vehicle
+                        if amv.fsm_state == config.FSM_DEADLOCK or amv.availability < config.BID_AVAILABILITY_THRESHOLD:
+                            is_stalled = True
+                        elif amv.fault_state == "sensor_failure" and amv.depth > config.THERMOCLINE_DEPTH * 0.9:
+                            is_stalled = True
+                        else:
+                            # Blocked by a dead or severely degraded vehicle holding a conflicting task
+                            task_id = amv.assigned_task.task_id
+                            winner_id = consensus.z[amv.amv_id].get(task_id)
+                            if winner_id is not None and winner_id != amv.amv_id:
+                                winner_amv = next((a for a in amvs if a.amv_id == winner_id), None)
+                                if winner_amv is not None and (winner_amv.energy <= 0 or winner_amv.fault_state in ("actuator_degraded_severe", "sensor_failure")):
+                                    is_stalled = True
+                    
+                    if is_stalled:
+                        stalled_amvs_this_step += 1
+        stalled_amv_timesteps += stalled_amvs_this_step
+
+        # Track active task delays (time spent in active state without being completed)
+        for task in tasks:
+            if not task.is_dummy and task.status == "active":
+                task_active_delay[task.task_id] += 1
+
         log_rows.append({
             "timestep": t,
             "tasks_completed": tasks_completed_so_far,
             "realloc_events": realloc_events_this_step,
             "packet_drop_rate": pkt["drop_rate"],
+            "stalled_amvs": stalled_amvs_this_step,
+            "deadlocks": len(consensus.deadlock_log),
+        })
+
+        telemetry_log.append({
+            "timestep": t,
+            "packet_loss_rate": float(pkt["drop_rate"]),
+            "fsm_transitions": [e for e in fsm_transitions if e["timestep"] == t],
+            "amvs": [
+                {
+                    "amv_id": int(amv.amv_id),
+                    "position": [float(amv.position[0]), float(amv.position[1]), float(amv.depth)],
+                    "fsm_state": str(amv.fsm_state),
+                    "fault_state": str(amv.fault_state),
+                    "declared_fault_state": str(getattr(amv, "declared_fault_state", amv.fault_state)),
+                    "trust_score": float(getattr(amv, "trust_score", 1.0)),
+                    "observed_speed": float(getattr(amv, "observed_speed", amv.speed)),
+                    "availability": float(getattr(amv, "availability", 1.0)),
+                    "energy": float(amv.energy),
+                    "assigned_task_id": amv.assigned_task.task_id if amv.assigned_task is not None else None,
+                    "tasks_done": int(amv.tasks_done),
+                    "distance_traveled": float(amv.distance_traveled),
+                }
+                for amv in amvs
+            ]
         })
 
         # Rolling graph snapshots (kept every 10 timesteps to save memory)
@@ -745,6 +1091,29 @@ def main():
               f"energy={amv.energy:.1f}  depth={amv.depth:.1f}m  "
               f"faults_seen={fault_states_seen}")
 
+    # ── Task-to-AMV Completion Mapping Summary ──────────────────────────────
+    print(f"\n{'='*82}")
+    print("TASK-TO-AMV COMPLETION MAPPING SUMMARY")
+    print(f"{'='*82}")
+    print(f"{'Task ID':<9} | {'Priority':<9} | {'Status':<12} | {'Quality':<20} | {'AMV':<8} | {'Timestep':<10}")
+    print("-" * 82)
+    completion_map = {e['task_id']: e for e in consensus.task_completion_log}
+    sorted_tasks = sorted(tasks, key=lambda tk: tk.task_id)
+    for tk in sorted_tasks:
+        tid = tk.task_id
+        pw = tk.priority_weight
+        is_comp = (tk.status == "completed")
+        c_info = completion_map.get(tid, {})
+        aid = c_info.get('amv_id', tk.assigned_to)
+        aid_str = f"AMV {aid}" if (is_comp and aid is not None) else "—"
+        ts_str = f"t = {c_info.get('timestep')}" if is_comp else "—"
+        status_str = "COMPLETED" if is_comp else tk.status.upper()
+        quality_str = getattr(tk, 'completion_quality', '—') if is_comp else "—"
+        if not quality_str:
+            quality_str = "—"
+        print(f"Task {tid:<4} | {pw:<9.2f} | {status_str:<12} | {quality_str:<20} | {aid_str:<8} | {ts_str:<10}")
+    print(f"{'='*82}")
+
     if consensus.deadlock_log:
         print(f"\nDeadlock events:")
         for dl in consensus.deadlock_log:
@@ -787,63 +1156,93 @@ def main():
     }
 
     # ── Visualizations (one call per plot) ───────────────────────────────────
-    print(f"\n{'='*60}")
-    print("Generating plots...")
-    print(f"  DEBUG: deadlock_events has {len(deadlock_events)} entries "
-          f"(same obj as consensus.deadlock_log: {deadlock_events is consensus.deadlock_log})")
-    print(f"{'='*60}\n")
+    if getattr(config, "SAVE_PLOTS", True):
+        print(f"\n{'='*60}")
+        print("Generating plots...")
+        print(f"  DEBUG: deadlock_events has {len(deadlock_events)} entries "
+              f"(same obj as consensus.deadlock_log: {deadlock_events is consensus.deadlock_log})")
+        print(f"{'='*60}\n")
 
-    initial_graph = graph_snapshots.get(0)
+        initial_graph = graph_snapshots.get(0)
 
-    plot_mission_space(amvs, tasks, initial_positions, consensus.reallocation_log,
-                       initial_graph, trajectory_log=trajectory_log)
-    plot_task_coverage(log_df, consensus.reallocation_log,
-                       consensus.deadlock_log, consensus.task_completion_log)
-    plot_availability(availability_log, fault_log)
-    plot_fault_gantt(fault_log)
-    plot_comm_graph_snapshots(graph_snapshots, energy_snapshots)
-    plot_energy(energy_log, reallocation_events_by_amv,
-                fsm_deadlock_events=fsm_deadlock_events)
-    plot_total_benefit(benefit_snapshot_log, consensus.deadlock_log,
-                       consensus.task_completion_log)
-    plot_edmc_proposals(proposal_log, mt_log, consensus.deadlock_log,
-                        consensus.task_completion_log)
+        plot_mission_space(amvs, tasks, initial_positions, consensus.reallocation_log,
+                           initial_graph, trajectory_log=trajectory_log)
+        plot_task_coverage(log_df, consensus.reallocation_log,
+                           consensus.deadlock_log, consensus.task_completion_log)
+        plot_availability(availability_log, fault_log)
+        plot_fault_gantt(fault_log)
+        plot_comm_graph_snapshots(graph_snapshots, energy_snapshots)
+        plot_energy(energy_log, reallocation_events_by_amv,
+                    fsm_deadlock_events=fsm_deadlock_events)
+        plot_total_benefit(benefit_snapshot_log, consensus.deadlock_log,
+                           consensus.task_completion_log)
+        plot_edmc_proposals(proposal_log, mt_log, consensus.deadlock_log,
+                            consensus.task_completion_log)
 
-    import visualize
-    visualize.plot_3d_mission_space(
-        trajectory_log=trajectory_log,
-        task_positions=[(t.position[0], t.position[1]) for t in tasks],
-        completed_tasks=set(t.task_id for t in tasks if t.status == 'completed'),
-        amv_colors=visualize.AMV_COLORS,
-        n_timesteps=config.SIMULATION_TIMESTEPS,
-    )
+        import visualize
+        visualize.plot_3d_mission_space(
+            trajectory_log=trajectory_log,
+            task_positions=[(t.position[0], t.position[1]) for t in tasks],
+            completed_tasks=set(t.task_id for t in tasks if t.status == 'completed'),
+            amv_colors=visualize.AMV_COLORS,
+            n_timesteps=config.SIMULATION_TIMESTEPS,
+        )
 
-    plot_physics_dashboard(physics_log, fault_log=fault_log)
+        plot_physics_dashboard(physics_log, fault_log=fault_log)
 
-    # New visualisations
-    visualize.plot_mesh_animation(mesh_animation_log,
-                                  filename='mesh_animation.gif')
-    visualize.plot_fsm_timeline(fsm_state_log, consensus.deadlock_log,
-                                consensus.task_completion_log,
-                                filename='plot_fsm_timeline.png')
-    visualize.plot_fsm_diagram(filename='plot_fsm_diagram.png')
+        # Enhanced and new visualisations
+        visualize.plot_mesh_animation(mesh_animation_log,
+                                      filename='mesh_animation.gif')
+        visualize.plot_fsm_timeline(
+            fsm_state_log,
+            consensus.deadlock_log,
+            consensus.task_completion_log,
+            fault_log=fault_log,
+            fault_injection_events=fault_injection_events,
+            fsm_transitions=fsm_transitions,
+            unknown_fault_log=unknown_fault_log,
+            filename='plot_fsm_timeline.png'
+        )
+        visualize.plot_task_completion_mapping(
+            tasks=tasks,
+            task_completion_log=consensus.task_completion_log,
+            n_amvs=config.N_AMVS,
+            filename='plot_task_completion_mapping.png'
+        )
+        visualize.plot_trust_timeline(
+            trust_log=trust_log,
+            trust_release_events=trust_release_events,
+            filename='plot_trust_timeline.png'
+        )
+        visualize.plot_telemetry_dashboard(
+            fsm_state_log=fsm_state_log,
+            fault_log=fault_log,
+            fault_injection_events=fault_injection_events,
+            tasks=tasks,
+            task_completion_log=consensus.task_completion_log,
+            trust_log=trust_log,
+            trust_release_events=trust_release_events,
+            deadlock_log=consensus.deadlock_log,
+            filename='plot_telemetry_dashboard.png'
+        )
+        visualize.plot_fsm_diagram(filename='plot_fsm_diagram.png')
 
-    # ── Symbolic Rule Engine Summary ─────────────────────────────────────────
-    rule_summary = rule_engine.get_rule_log_summary()
-    print(f"\n{'='*60}")
-    print("SYMBOLIC RULE ENGINE SUMMARY")
-    print(f"{'='*60}")
-    print(f"  Total rules fired:    {rule_summary['total_rules_fired']}")
-    print(f"  Vetoes:               {rule_summary['vetoes']}")
-    print(f"  Modifications:        {rule_summary['modifications']}")
-    print(f"  Escalation strikes:   {rule_summary['escalation_strikes']}")
-    print(f"  By rule:")
-    for rule_name, count in rule_summary['by_rule'].items():
-        print(f"    {rule_name:25s}  {count}")
-    print(f"{'='*60}")
+        # ── Symbolic Rule Engine Summary ─────────────────────────────────────────
+        rule_summary = rule_engine.get_rule_log_summary()
+        print(f"\n{'='*60}")
+        print("SYMBOLIC RULE ENGINE SUMMARY")
+        print(f"{'='*60}")
+        print(f"  Total rules fired:    {rule_summary['total_rules_fired']}")
+        print(f"  Vetoes:               {rule_summary['vetoes']}")
+        print(f"  Modifications:        {rule_summary['modifications']}")
+        print(f"  Escalation strikes:   {rule_summary['escalation_strikes']}")
+        print(f"  By rule:")
+        for rule_name, count in rule_summary['by_rule'].items():
+            print(f"    {rule_name:25s}  {count}")
+        print(f"{'='*60}")
 
-    # ── CNN Confidence Histogram ──────────────────────────────────────────
-    plot_confidence_histogram(confidence_log)
+        # ── CNN Confidence Histogram ──────────────────────────────────────────
+        plot_confidence_histogram(confidence_log)
 
     # ── Stress Scenario Summary ──────────────────────────────────────────
     if config.STRESS_SCENARIO != 'none':
@@ -885,7 +1284,61 @@ def main():
               f"{total_completed}/{config.N_TASKS} ({total_completed/config.N_TASKS:.0%})")
         print(f"{'='*60}")
 
+    # Calculate task delay metrics
+    real_task_delays = [delay for tid, delay in task_active_delay.items()]
+    mean_task_delay = float(np.mean(real_task_delays)) if real_task_delays else 0.0
+    max_task_delay = float(np.max(real_task_delays)) if real_task_delays else 0.0
+    never_completed_tasks_count = sum(1 for t in tasks if not t.is_dummy and t.status != "completed")
+
+    print(f"\nTask active delay metrics:")
+    print(f"  Mean task delay: {mean_task_delay:.2f} ts")
+    print(f"  Max task delay:  {max_task_delay:.2f} ts")
+    print(f"  Never completed: {never_completed_tasks_count} tasks")
+
+    import comms as comms_module
+    print(f"  [DEBUG CONGESTION] raw comms.congestion_drops = {comms.congestion_drops}")
+    print(f"  [DEBUG CONGESTION] module-level comms.RAW_CONGESTION_DROPS = {comms_module.RAW_CONGESTION_DROPS}")
     print("\nAll done!")
+
+    if getattr(config, "TELEMETRY_LOG_PATH", None) is not None:
+        with open(config.TELEMETRY_LOG_PATH, "w") as f:
+            json.dump(telemetry_log, f, indent=2)
+        print(f"Saved telemetry log to {config.TELEMETRY_LOG_PATH}")
+
+    results = {
+        "log_df": log_df,
+        "tasks": tasks,
+        "completion_timestamps": completion_timestamps,
+        "availability_log": availability_log,
+        "fault_log": fault_log,
+        "deadlock_log": consensus.deadlock_log,
+        "total_sent": pkt['total_sent'],
+        "total_dropped": pkt['total_dropped'],
+        "energy_log": energy_log,
+        "tasks_completed_count": total_completed,
+        "auction_iterations_log": consensus.auction_iteration_log,
+        "connectivity_log": connectivity_log,
+        "physics_log": physics_log,
+        "thermocline_messages": pkt.get('thermocline_messages', 0),
+        "congestion_drops": pkt.get('congestion_drops', 0),
+        "stalled_amv_timesteps": stalled_amv_timesteps,
+        "mean_task_delay": mean_task_delay,
+        "max_task_delay": max_task_delay,
+        "never_completed_tasks": never_completed_tasks_count,
+        "task_active_delay": task_active_delay,
+        "telemetry_log": telemetry_log,
+        "deadlock_timeout_fires": deadlock_timeout_fires,
+        "amvs": amvs,
+    }
+
+    # ── Archive run results for dashboard ────────────────────────────────────
+    try:
+        import run_archiver
+        run_archiver.archive_run(results, seed)
+    except Exception as e:
+        print(f"[WARNING] Run archiving failed: {e}")
+
+    return results
 
 
 if __name__ == "__main__":
