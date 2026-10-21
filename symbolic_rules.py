@@ -127,11 +127,27 @@ class SymbolicRuleEngine:
     # ── Rule 4 — Confidence Gate ────────────────────────────────────────────
 
     def check_confidence_gate(self, amv: Any) -> RuleVerdict:
-        """Suppress bidding when CNN classification confidence is low."""
+        """Suppress bidding when CNN classification confidence is low or UNKNOWN_FAULT is detected via Mahalanobis distance."""
         CONFIDENCE_THRESHOLD = 0.60
+        MAHALANOBIS_THRESHOLD = getattr(config, "OPENSET_THRESHOLD", 15.0)
 
         probs = getattr(amv, "_last_fault_probs", None)
         confidence = float(np.max(probs)) if probs is not None else 1.0
+        m_dist = getattr(amv, "_last_mahalanobis_dist", None)
+        is_unknown = getattr(amv, "is_unknown_fault", False)
+
+        # First-class check: Open-set Mahalanobis distance / UNKNOWN_FAULT
+        if (m_dist is not None and m_dist > MAHALANOBIS_THRESHOLD) or is_unknown:
+            dist_str = f"{m_dist:.2f}" if m_dist is not None else "N/A"
+            return RuleVerdict(
+                allowed=False,
+                rule_name="confidence_gate",
+                reason=(
+                    f"UNKNOWN_FAULT flagged (Mahalanobis distance {dist_str} > threshold {MAHALANOBIS_THRESHOLD:.2f}), "
+                    f"bid suppressed for safety"
+                ),
+                modification={"suppress_bid": True, "unknown_fault": True},
+            )
 
         if confidence < CONFIDENCE_THRESHOLD:
             return RuleVerdict(

@@ -21,6 +21,7 @@ class Task:
         self.position = np.array(position, dtype=np.float64)
         self.priority_weight = priority_weight
         self.status = "unassigned"        # unassigned / active / completed
+        self.completion_quality = None    # "completed_clean" / "completed_degraded" / None
         self.assigned_to = None           # AMV id or None
         self.waiting_time = 0             # timesteps unserved
         self.arrival_order = arrival_order if arrival_order is not None else task_id
@@ -54,6 +55,10 @@ class AMV:
         # ── FSM state (Miele et al. LFSM) ──────────────────────────────────
         self.fsm_state = config.FSM_HOMING
         self.dwell_timer = 0              # counts down in Serving state
+        self.fsm_transitions = []        # list of {timestep, amv_id, old_state, new_state, trigger_reason}
+        self.transition_log = []         # alias for backward compatibility
+        self._current_timestep = 0
+        self._global_transition_log = None
 
         # ── EDMC proposal ──────────────────────────────────────────────────────
         self.m_p_i = -1                   # proposal value for EDMC
@@ -71,6 +76,7 @@ class AMV:
         self.tasks_completed = []
         self.fault_history = []  # list of (timestep, fault_state)
         self.distance_traveled = 0.0
+        self.observed_speed = config.SPEED.get(self.fault_state, 5.0)
 
         # Trust scoring
         self.trust_score = 1.0
@@ -104,38 +110,54 @@ class AMV:
 
     # ── FSM transitions ─────────────────────────────────────────────────────
 
-    def transition_to(self, new_state):
-        """Transition to a new FSM state."""
-        self.fsm_state = new_state
+    def transition_to(self, new_state, reason="unspecified", timestep=None):
+        """Transition to a new FSM state and log transition event."""
+        old_state = self.fsm_state
+        if old_state != new_state:
+            t = timestep if timestep is not None else getattr(self, "_current_timestep", 0)
+            self.fsm_state = new_state
+            entry = {
+                "timestep": int(t),
+                "amv_id": int(self.amv_id),
+                "old_state": str(old_state),
+                "new_state": str(new_state),
+                "trigger_reason": str(reason),
+            }
+            self.fsm_transitions.append(entry)
+            self.transition_log.append(entry)
+            if getattr(self, "_global_transition_log", None) is not None:
+                self._global_transition_log.append(entry)
 
-    def enter_assignment(self):
+    def enter_assignment(self, reason="assignment_seeking", timestep=None):
         """Transition into Assignment state and reset EDMC if configured."""
-        self.fsm_state = config.FSM_ASSIGNMENT
+        self.transition_to(config.FSM_ASSIGNMENT, reason=reason, timestep=timestep)
         if config.EDMC_RESET_ON_ASSIGNMENT:
             self.m_p_i = -1
 
-    def enter_reaching(self):
+    def enter_reaching(self, reason="task_assigned", timestep=None):
         """Assignment → Reaching (task has been assigned)."""
-        self.fsm_state = config.FSM_REACHING
+        self.transition_to(config.FSM_REACHING, reason=reason, timestep=timestep)
 
-    def enter_serving(self):
+    def enter_serving(self, reason="task_position_reached", timestep=None):
         """Reaching → Serving (position reached, start dwell timer)."""
-        self.fsm_state = config.FSM_SERVING
+        self.transition_to(config.FSM_SERVING, reason=reason, timestep=timestep)
         self.dwell_timer = config.TASK_DWELL_TIME
+        if self.assigned_task is not None:
+            self.assigned_task._had_fault_during_serving = (self.fault_state != "normal")
 
-    def enter_idle(self):
+    def enter_idle(self, reason="no_task_or_paused", timestep=None):
         """Enter Idle state (dummy task or paused by Algorithm 1)."""
-        self.fsm_state = config.FSM_IDLE
+        self.transition_to(config.FSM_IDLE, reason=reason, timestep=timestep)
 
-    def enter_patrol(self, all_tasks=None, tasks=None):
+    def enter_patrol(self, all_tasks=None, tasks=None, reason="patrol_orbit", timestep=None):
         """Enter Patrol state — move toward unassigned tasks."""
-        self.fsm_state = config.FSM_PATROL
+        self.transition_to(config.FSM_PATROL, reason=reason, timestep=timestep)
         # Support both kwarg names for backwards compat
         task_list = all_tasks or tasks or []
         self._patrol_tasks = task_list
         if task_list:
             unassigned = [t for t in task_list
-                          if t.status == 'unassigned' and not t.is_dummy]
+                          if hasattr(t, 'status') and t.status == 'unassigned' and not getattr(t, 'is_dummy', False)]
             if unassigned:
                 nearest = min(unassigned,
                              key=lambda t: np.linalg.norm(self.position - t.position))
@@ -145,9 +167,10 @@ class AMV:
         else:
             self.patrol_target = np.array([500.0, 500.0])
 
-    def enter_deadlock(self):
+    def enter_deadlock(self, reason="availability_below_threshold", timestep=None):
         """Reaching → Deadlock (fault-based local deadlock proxy)."""
-        self.fsm_state = config.FSM_DEADLOCK
+        self.transition_to(config.FSM_DEADLOCK, reason=reason, timestep=timestep)
+
 
     def update_dvl_drift(self, distance_moved):
         """
@@ -411,6 +434,7 @@ class AMV:
             move_vec = move_vec * (dist / total_move)
 
         distance_moved = float(np.linalg.norm(move_vec))
+        self.observed_speed = distance_moved
         self.position += move_vec
         self.distance_traveled += distance_moved
         self.update_dvl_drift(distance_moved)
@@ -443,7 +467,7 @@ class AMV:
             tasks = getattr(self, '_patrol_tasks', [])
             unassigned = [t for t in tasks
                           if hasattr(t, 'status') and t.status == 'unassigned'
-                          and not t.is_dummy]
+                          and not getattr(t, 'is_dummy', False)]
             if unassigned:
                 nearest = min(unassigned,
                              key=lambda t: np.linalg.norm(self.position - t.position))
@@ -462,12 +486,15 @@ class AMV:
                 direction = target - self.position
                 dist = np.linalg.norm(direction)
 
+        step = 0.0
         if dist > 1e-6:
             step = min(patrol_speed, dist)
             move_vec = (direction / dist) * step
             self.position += move_vec
             self.distance_traveled += step
             self.update_dvl_drift(step)
+
+        self.observed_speed = step
 
         # Non-linear battery discharge for patrol movement
         discharge_multiplier = 1.0 + max(0.0, (50.0 - self.energy) / 50.0) * 0.5
@@ -481,7 +508,7 @@ class AMV:
 
     # ── Task completion (FSM-aware) ──────────────────────────────────────────
 
-    def check_task_reached(self):
+    def check_task_reached(self, current_timestep=None):
         """
         In Reaching state: check if AMV has arrived at task.
         If so, transition to Serving and start dwell timer. Returns True.
@@ -491,26 +518,28 @@ class AMV:
         if self.assigned_task is None or self.assigned_task.status == "completed":
             return False
 
+        t = current_timestep if current_timestep is not None else getattr(self, "_current_timestep", 0)
+
         # True arrival check — uses real position
         true_dist = np.linalg.norm(self.position - self.assigned_task.position)
         if true_dist < config.TASK_COMPLETION_RADIUS:
-            print(f"  [ARRIVED] AMV{self.amv_id} reached T{self.assigned_task.task_id} "
+            print(f"  [ARRIVED] t={t}: AMV{self.amv_id} reached T{self.assigned_task.task_id} "
                   f"true_dist={true_dist:.1f}m "
                   f"dvl_error={self.total_dvl_drift:.1f}m")
-            self.enter_serving()
+            self.enter_serving(reason=f"arrived_at_task_{self.assigned_task.task_id}", timestep=t)
             return True
 
         # Navigation: AMV thinks it has arrived via DVL estimate
         estimated_dist = np.linalg.norm(self.estimated_position - self.assigned_task.position)
         if estimated_dist < config.TASK_COMPLETION_RADIUS and true_dist < config.TASK_COMPLETION_RADIUS * 3:
-            print(f"  [ARRIVED-DVL] AMV{self.amv_id} T{self.assigned_task.task_id} "
+            print(f"  [ARRIVED-DVL] t={t}: AMV{self.amv_id} T{self.assigned_task.task_id} "
                   f"est_dist={estimated_dist:.1f}m true_dist={true_dist:.1f}m "
                   f"dvl_error={self.total_dvl_drift:.1f}m")
-            self.enter_serving()
+            self.enter_serving(reason=f"arrived_at_task_{self.assigned_task.task_id}_dvl", timestep=t)
             return True
         return False
 
-    def tick_serving(self):
+    def tick_serving(self, current_timestep=None):
         """
         In Serving state: decrement dwell timer.
         When timer hits 0, mark task completed and transition to Assignment.
@@ -519,21 +548,35 @@ class AMV:
         if self.fsm_state != config.FSM_SERVING:
             return False
 
+        t = current_timestep if current_timestep is not None else getattr(self, "_current_timestep", 0)
+        self.observed_speed = 0.0  # Stationary on-station during serving
+
+        if self.assigned_task is not None and self.fault_state != "normal":
+            self.assigned_task._had_fault_during_serving = True
+
         self.dwell_timer -= 1
         if self.dwell_timer <= 0:
+            completed_task_id = None
             if self.assigned_task is not None:
+                completed_task_id = self.assigned_task.task_id
                 self.assigned_task.status = "completed"
                 self.assigned_task.assigned_to = self.amv_id
+                if getattr(self.assigned_task, '_had_fault_during_serving', False) or self.fault_state != "normal":
+                    self.assigned_task.completion_quality = "completed_degraded"
+                else:
+                    self.assigned_task.completion_quality = "completed_clean"
                 self.energy = max(0.0, self.energy - config.ENERGY_TASK_COST)
-                self.tasks_completed.append(self.assigned_task.task_id)
+                self.tasks_completed.append(completed_task_id)
                 self.assigned_task = None
-            self.enter_assignment()
+                print(f"  [TASK COMPLETED] t={t}: AMV{self.amv_id} completed T{completed_task_id} (quality={self.tasks_completed and 'evaluated'}, fault_state={self.fault_state})")
+            reason_str = f"task_{completed_task_id}_completed" if completed_task_id is not None else "task_completed"
+            self.enter_assignment(reason=reason_str, timestep=t)
             return True
         return False
 
     # ── Deadlock check (fault-based local proxy) ─────────────────────────────
 
-    def check_local_deadlock(self):
+    def check_local_deadlock(self, current_timestep=None):
         """
         In Reaching state: enter Deadlock if availability drops below threshold.
         This replaces the paper's connectivity-based deadlock with fault-based.
@@ -543,9 +586,11 @@ class AMV:
         if self.fsm_state != config.FSM_REACHING:
             return False
         if self.availability < config.BID_AVAILABILITY_THRESHOLD:
-            self.enter_deadlock()
+            t = current_timestep if current_timestep is not None else getattr(self, "_current_timestep", 0)
+            self.enter_deadlock(reason="availability_below_threshold", timestep=t)
             return True
         return False
+
 
     # ── EDMC proposal computation ──────────────────────────────────────────
 

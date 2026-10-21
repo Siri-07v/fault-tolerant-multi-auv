@@ -150,9 +150,15 @@ INJECT_MISCLASSIFICATION = False
 MISCLASSIFICATION_TARGET_AMV = 1
 
 # ─── Stress Testing ──────────────────────────────────────────────────────
-STRESS_SCENARIO = 'none'       # options: 'none', 'amv_loss', 'comm_blackout', 'mass_fault'
+STRESS_SCENARIO = 'none'       # options: 'none', 'amv_loss', 'comm_blackout', 'mass_fault', 'serving_fault_injection'
 STRESS_START_TIMESTEP = 150
 STRESS_END_TIMESTEP = 300
+
+# Serving-State Fault Injection Stress Test Settings (timed shortly before dwell expiration)
+SERVING_FAULT_AMV = 0                  # Target AMV ID to inject fault while in Serving state
+SERVING_FAULT_DWELL_TRIGGER = 3        # Injected when dwell_timer countdown reaches this value
+SERVING_FAULT_TARGET_STATE = "actuator_degraded_severe"  # Injected fault class
+SERVING_FAULT_START_TIMESTEP = 0       # Earliest timestep to activate serving fault trigger
 
 # ─── Acoustic Bandwidth Constraint ───────────────────────────────────────
 MAX_MESSAGES_PER_LINK = 5
@@ -162,6 +168,12 @@ FIXED_SEED = None
 
 # ─── Telemetry Logging ──────────────────────────────────────────────────
 TELEMETRY_LOG_PATH = None
+
+# ─── Sensor Package Assumption Note ───────────────────────────────────────
+# The 7-channel sensor set (depth, w_row, w_pitch, w_yaw, a_x, a_y, a_z) is a general,
+# platform-agnostic IMU + depth sensor suite utilized for the 1D-CNN fault classification pipeline.
+# Additional sensor payloads (e.g. optical cameras, sidescan sonar, acoustic modems) are AMV-hardware
+# dependent and outside the scope of the onboard kinematic fault classifier.
 
 # ─── Security / Adversarial Settings ───────────────────────────────────────
 COMPROMISED_AMVS = []  # List of AMV IDs that are compromised
@@ -183,5 +195,7 @@ GPS_SPOOF_ENABLED = False
 GPS_SPOOF_OFFSET = (0.0, 0.0)  # (dx, dy) in meters
 GPS_SANITY_THRESHOLD = 30.0    # maximum allowed discrepancy between GPS and DVL estimate (meters)
 
-
-
+# ─── Open-Set Fault Detection Settings ────────────────────────────────────
+OPENSET_PARAMS_PATH = "openset_params.pkl"
+OPENSET_THRESHOLD = 15.00      # Mahalanobis distance threshold (tuned on validation split)
+OPENSET_DETECTOR_ENABLED = True
